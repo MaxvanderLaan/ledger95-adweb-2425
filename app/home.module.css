@@ -1,0 +1,45 @@
+.logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    transform: translateY(-15%);
+}
+
+.image {
+    width: 500px;
+    height: auto;
+}
+
+.text {
+    margin-top: -50px; 
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.company  {
+    font-size: 45px;
+    letter-spacing: -2px;
+    font-weight: 500;
+    margin-bottom: -38px;    
+    margin-left: -23px;
+}
+
+.title{
+    display: flex;
+    justify-content: center;
+}
+
+.product {
+    font-size: 90px;
+    letter-spacing: -8px;
+}
+
+.number {
+    font-size: 90px;
+    letter-spacing: -10px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
