@@ -36,7 +36,7 @@ export default function Page() {
                                 {/* file explorer */}
                                 <div className={styles.hiarchyMain}>
                                     {/* toplevel */}
-                                    <div className="topLevel">
+                                    <div>
                                         <div className={styles.folder}>
                                             <Image width={16} height={16} src="/icons/desktop_w95-0.png" alt="desktop_w95" />
                                             <p>Desktop</p>
@@ -45,60 +45,38 @@ export default function Page() {
                                         <div className={styles.firstLevel}>
                                             <div className={styles.folder}>
                                                 <div className={styles.box}>-</div>
-                                                <Image width={16} height={16} src="/icons/computer_explorer-5.png" alt="computer_explorer" />
-                                                <p>My Computer</p>
+                                                <Image width={16} height={16} src="/icons/directory_open_file_mydocs-5.png" alt="directory_open_file_mydocs" />
+                                                <p>Ledger</p>
                                             </div>
-                                            {/* second level */}
+                                            {/* dynamic second level */}
                                             <div className={styles.secondLevel}>
                                                 <div className={styles.folder}>
                                                     <div className={styles.box}>+</div>
-                                                    <Image width={16} height={16} src="/icons/removable_disk_drive-4.png" alt="removable_disk_drive" />
-                                                    <p>3½ Floppy (A:)</p>
+                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
+                                                    <p>Boekje 1</p>
                                                 </div>
-                                                <div className={styles.folder}>
-                                                    <div className={styles.box}>-</div>
-                                                    <Image width={16} height={16} src="/icons/hard_disk_drive_cool-0.png" alt="hard_disk_drive_cool" />
-                                                    <p>(C:)</p>
-                                                </div>
-                                                {/* (not yet) dynamic third level */}
-                                                <div className={styles.thirdLevel}>
-                                                    <div className={styles.folder}>
-                                                        <div className={styles.box}>+</div>
-                                                        <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                        <p>Boekje 1</p>
-                                                    </div>
-                                                    <div className={styles.folder}>
-                                                        <div className={styles.box}>+</div>
-                                                        <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                        <p>Boekje 2</p>
-                                                    </div>
-                                                    <div className={styles.folder}>
-                                                        <div className={styles.box}>-</div>
-                                                        <Image width={16} height={16} src="/icons/directory_open_cool-3.png" alt="directory_open_cool" />
-                                                        <p>Boekje 3</p>
-                                                    </div>
-                                                    <div className={styles.folder}>
-                                                        <div className={styles.box}>+</div>
-                                                        <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                        <p>Boekje 4</p>
-                                                    </div>
-                                                </div>
-                                                {/* rest of second level */}
                                                 <div className={styles.folder}>
                                                     <div className={styles.box}>+</div>
-                                                    <Image width={16} height={16} src="/icons/cd_drive-0.png" alt="cd_drive" />
-                                                    <p>Intl_us_cd1 (D:)</p>
+                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
+                                                    <p>Boekje 2</p>
                                                 </div>
                                                 <div className={`${styles.folder} ${styles.noBoxOffset}`}>
-                                                    <Image width={16} height={16} src="/icons/directory_control_panel_cool-3.png" alt="directory_control_panel_cool" />
-                                                    <p>Control Panel</p>
+                                                    {/* <div className={styles.box}>-</div> */}
+                                                    <Image width={16} height={16} src="/icons/directory_open_cool-3.png" alt="directory_open_cool" />
+                                                    <p>Boekje 3</p>
                                                 </div>
-                                                <div className={`${styles.folder} ${styles.noBoxOffset}`}>
-                                                    <Image width={16} height={16} src="/icons/directory_network_conn-5.png" alt="directory_network_conn" />
-                                                    <p>Printers</p>
+                                                <div className={styles.folder}>
+                                                    <div className={styles.box}>+</div>
+                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
+                                                    <p>Boekje 4</p>
                                                 </div>
                                             </div>
                                             {/* rest of first level */}
+                                            <div className={styles.folder}>
+                                                <div className={styles.box}>+</div>
+                                                <Image width={16} height={16} src="/icons/directory_open_file_mydocs-5.png" alt="directory_open_file_mydocs" />
+                                                <p>Archive</p>
+                                            </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/recycle_bin_full_cool-0.png" alt="recycle_bin_full_cool" />
                                                 <p>Recycle Bin</p>
@@ -114,6 +92,7 @@ export default function Page() {
                                         </div>
                                     </div>
                                 </div>
+
                                 {/* (not yet) dynamic map with contests */}
                                 <div className={styles.folderMain}>
                                     <div className={styles.folder}>
@@ -130,6 +109,7 @@ export default function Page() {
                                     </div>
                                 </div>
                             </div>
+
                             <div className={styles.explorerFooter}>
                                 <div className={styles.hiarchyBarFooter}>1 object(s) selected</div>
                                 <div className={styles.folderBarFooter}>4.50KB</div>

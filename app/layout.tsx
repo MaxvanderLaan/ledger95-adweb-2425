@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from './ui/footer';
 import { W95FA } from '@/app/ui/fonts';
+import Image from 'next/image';
+import DesktopEnvironment from './ui/desktopEnvironment';
 
 export const metadata: Metadata = {
   title: "Ledger95",
@@ -18,6 +20,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
           <div className="background-image" />
           <main className="page-content">
             {children}
+            <DesktopEnvironment />
           </main>
           <Footer />
         </div>
