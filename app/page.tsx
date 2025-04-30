@@ -1,11 +1,12 @@
 import styles from '@/app/home.module.css';
 import { HelveticaBQ, Helvetica } from '@/app/ui/fonts';
+import Image from 'next/image';
 
 export default function Home() {
   return (
     <div className={styles.logo}>
-      <div>
-        <img className={styles.image} src="/w95-logo-big.png" />
+      <div className={styles.imageWrapper}>
+        <Image src="/w95-logo-big.png" alt="windows 95 logo" fill className={styles.image}/>
       </div>
       <div className={styles.text}>
         <div className={`${styles.company} ${Helvetica.className}`}>

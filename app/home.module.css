@@ -5,13 +5,18 @@
     align-items: center;
     min-height: 80vh;
     transform: translateY(-15%);
+    color: black;
+}
+
+.imageWrapper {
+    position: relative;
+    width: 200%;
+    max-width: 500px;
+    aspect-ratio: 3 / 2;
 }
 
 .image {
-    width: auto;
-    max-width: 100%;
-    max-height: 500px;
-    height: auto;
+    object-fit: contain;
 }
 
 .text {
