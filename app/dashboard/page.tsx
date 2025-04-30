@@ -48,7 +48,7 @@ export default function Page() {
                                                 <Image width={16} height={16} src="/icons/directory_open_file_mydocs-5.png" alt="directory_open_file_mydocs" />
                                                 <p>Ledger</p>
                                             </div>
-                                            {/* dynamic second level */}
+                                            {/* (not yet) dynamic second level */}
                                             <div className={styles.secondLevel}>
                                                 <div className={styles.folder}>
                                                     <div className={styles.box}>+</div>
@@ -95,10 +95,12 @@ export default function Page() {
 
                                 {/* (not yet) dynamic map with contests */}
                                 <div className={styles.folderMain}>
-                                    <div className={styles.folder}>
+                                    <Link href="/ledger/3" className={styles.link}>
+                                   <div className={styles.folder}>
                                         <Image width={16} height={16} src="/icons/executable-0.png" alt="executable" />
                                         <p>Boekje3.exe</p>
                                     </div>
+                                    </Link>
                                     <div className={styles.folder}>
                                         <Image width={16} height={16} src="/icons/notepad_file-2.png" alt="notepad" />
                                         <p>Description.txt</p>
