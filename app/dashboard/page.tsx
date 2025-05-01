@@ -1,4 +1,4 @@
-import styles from '@/app/ui/dashboard.module.css';
+import styles from '@/app/dashboard/dashboard.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -95,7 +95,7 @@ export default function Page() {
 
                                 {/* (not yet) dynamic map with contests */}
                                 <div className={styles.folderMain}>
-                                    <Link href="/ledger/3" className={styles.link}>
+                                    <Link href="/ledger/3/overview" className={styles.link}>
                                    <div className={styles.folder}>
                                         <Image width={16} height={16} src="/icons/executable-0.png" alt="executable" />
                                         <p>Boekje3.exe</p>
