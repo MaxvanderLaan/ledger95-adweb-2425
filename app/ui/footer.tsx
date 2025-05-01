@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Clock from '@/app/ui/clock';
 import Image from 'next/image';
 import { useAuth } from '../../context/AuthContext';
-import LogoutButton from '../../components/LogoutButton';
+import LogoutButton from './LogoutButton';
 
 export default function Footer() {
   const { user } = useAuth();
