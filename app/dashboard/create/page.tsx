@@ -36,11 +36,7 @@ export default function Page() {
                             <Image width={16} height={16} src="/icons/help_book_cool-4.png" alt="help_book_cool" />
                             <h4>Create new ledger</h4>
                         </div>
-                        <Link href="/dashboard">
-                            <div className="btn close-button">
-                                X
-                            </div>
-                        </Link>
+                        <Link href="/dashboard"><div className="btn close-button">X</div></Link>
                     </div>
                     <div className="card-body"></div>
                     <div className={styles.container}>
