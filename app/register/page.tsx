@@ -1,33 +1,29 @@
 "use client";
 
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const token = await userCredential.user.getIdToken();
-            Cookies.set('authToken', token, { expires: 7 });
-            
-            router.push('/');
+            await createUserWithEmailAndPassword(auth, email, password);
+            router.push('/login');
         } catch (error) {
-            console.error('Error logging in:', error);
+            console.error('Error registering:', error);
         }
     };
 
     return (
         <div>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
+            <h1>Register</h1>
+            <form onSubmit={handleRegister}>
                 <input
                     type="email"
                     placeholder="Email"
@@ -42,10 +38,10 @@ const LoginPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
         </div>
     );
 };
 
-export default LoginPage;
+export default RegisterPage;
