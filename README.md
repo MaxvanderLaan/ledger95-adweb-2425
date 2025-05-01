@@ -2,7 +2,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, run the npm install command to install the dependencies:
+
+```bash
+npm install
+```
+
+Create a firebase.js file in the src folder of the project.
+
+Copy the firebase config from the app in the project from the firebase console.
+
+Paste the config in the firebase.js file you have created.
+
+Run the development server:
 
 ```bash
 npm run dev
