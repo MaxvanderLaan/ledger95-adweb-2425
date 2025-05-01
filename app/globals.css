@@ -72,6 +72,59 @@ body {
     color: white;
 }
 
+/* standard button styling */
+.standard-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-width: 2px;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #333333;
+    border-bottom-color: #333333;
+    background: silver;
+    color: black;
+    height: 30px;
+    width: 100px;
+}
+
+.standard-button:hover {
+    border: 2px inset #fff;
+    background: silver;
+    color: #424242;
+    box-shadow: -1px -1px #000;
+}
+
+.standard-button:focus {
+    border: 2px inset #fff !important;
+    background: silver;
+    color: #424242;
+    box-shadow: -1px -1px #000 !important;
+    outline: 0 !important;
+    background: url(/public/background.bmp);
+}
+
+.standard-button:active {
+    border: 2px inset #fff !important;
+    color: #424242;
+    box-shadow: -1px -1px #000 !important;
+    outline: 0 !important;
+    background: url(/public/background.bmp);
+}
+
+.standard-button.disabled,
+.standard-button:disabled {
+    cursor: default;
+    background-color: silver;
+    border-style: outset;
+    border-color: buttonface;
+    border-right-color: #424242;
+    border-bottom-color: #424242;
+    color: grey;
+    text-shadow: 1px 1px #fff;
+}
+
 /* stuff provided by starter project */
 
 :root {
@@ -95,7 +148,6 @@ body {
 body {
     color: var(--foreground);
     background: var(--background);
-    font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -140,7 +192,6 @@ Body styles
 
 */
 body {
-    font-family: "MS Sans Serif", Tahoma, Verdana, Segoe, sans-serif;
     background: teal;
     color: white;
 }
