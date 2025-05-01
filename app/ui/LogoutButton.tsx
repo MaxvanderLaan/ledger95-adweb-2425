@@ -3,7 +3,7 @@
 import React from 'react';
 import styles from '@/app/ui/footer.module.css';
 import Image from 'next/image';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
