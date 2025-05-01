@@ -3,14 +3,15 @@ import Tabs from './tabs';
 import styles from '@/app/ledger/[ledgerId]/ledger.module.css';
 import Link from 'next/link';
 
-export default function LedgerLayout({ children, params }: { children: ReactNode, params: { ledgerId: string } }) {
+export default async function LedgerLayout({ children, params }: { children: ReactNode, params: { ledgerId: string } }) {
+    const { ledgerId } = await params;
     return (
         <main>
             <div className="container">
                 <div className="card mb-4">
                     <div className={`card-header ${styles.header}`}>
                         <div className={styles.subHeader}>
-                            <h4 className="my-0 font-weight-normal">Boekje {params.ledgerId}</h4>
+                            <h4 className="my-0 font-weight-normal">Boekje {ledgerId}</h4>
                         </div>
                         <Link href="/">
                             <div className={`btn ${styles.closeButton}`}>
@@ -21,7 +22,7 @@ export default function LedgerLayout({ children, params }: { children: ReactNode
 
                     <div className="card-body">
                         <div className={styles.ledger}>
-                            <Tabs ledgerId={params.ledgerId} />
+                            <Tabs ledgerId={ledgerId} />
                             <div className={styles.content}>
                                 {children}
                             </div>
