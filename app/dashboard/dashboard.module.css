@@ -175,3 +175,12 @@
     padding-left: 0px;
     margin-top: 3px;
 }
+
+.link {
+    color: black;
+    text-decoration: none;
+}
+
+.link:visited {
+    color: black;
+}

@@ -88,25 +88,6 @@ export default function Page() {
                                                         <p>{ledger.name}</p>
                                                     </div>
                                                 ))}
-                                                {/* <div className={styles.folder}>
-                                                    <div className={styles.box}>+</div>
-                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                    <p>Boekje 1</p>
-                                                </div>
-                                                <div className={styles.folder}>
-                                                    <div className={styles.box}>+</div>
-                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                    <p>Boekje 2</p>
-                                                </div>
-                                                <div className={`${styles.folder} ${styles.noBoxOffset}`}>
-                                                    <Image width={16} height={16} src="/icons/directory_open_cool-3.png" alt="directory_open_cool" />
-                                                    <p>Boekje 3</p>
-                                                </div>
-                                                <div className={styles.folder}>
-                                                    <div className={styles.box}>+</div>
-                                                    <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_closed_cool" />
-                                                    <p>Boekje 4</p>
-                                                </div> */}
                                             </div>
                                             {/* rest of first level */}
                                             <div className={styles.folder}>
@@ -132,10 +113,12 @@ export default function Page() {
 
                                 {/* (not yet) dynamic map with contests */}
                                 <div className={styles.folderMain}>
-                                    <div className={styles.folder}>
+                                    <Link href="/ledger/3/overview" className={styles.link}>
+                                   <div className={styles.folder}>
                                         <Image width={16} height={16} src="/icons/executable-0.png" alt="executable" />
                                         <p>Boekje3.exe</p>
                                     </div>
+                                    </Link>
                                     <div className={styles.folder}>
                                         <Image width={16} height={16} src="/icons/notepad_file-2.png" alt="notepad" />
                                         <p>Description.txt</p>
