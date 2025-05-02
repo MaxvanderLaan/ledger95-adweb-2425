@@ -27,7 +27,8 @@ export default function Page() {
             const docRef = await addDoc(collection(db, 'ledgers'), {
                 name: name,
                 description: description,
-                userId: user.uid,
+                owner: user.uid,
+                members: {},
             });
             console.log("Written document with ID: ", docRef.id);
             setName('');
