@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from '@/firebase';
-import { useRouter } from 'next/navigation';
 import styles from '@/app/ledger/[ledgerId]/create/create.module.css';
 
 interface Props {
@@ -12,7 +11,6 @@ interface Props {
 
 export default function CreateForm({ ledgerId }: Props) {
     const [amount, setAmount] = useState('');
-    const router = useRouter();
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

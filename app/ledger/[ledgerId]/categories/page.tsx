@@ -1,11 +1,11 @@
-export default async function CategoriesPage({ params }: { params: Promise<{ ledgerId: string }> }) {
-    const { ledgerId } = await params;
-    
+import CategoryForm from './categoryForm';
+import CategoryTable from './categoryTable';
+
+export default function CategoriesPage({ params }: { params: { ledgerId: string } }) {
     return (
         <main>
-            <h2>Overview for Ledger {ledgerId}</h2>
-            <p>This is the categories content for the ledger.</p>
+            <CategoryTable ledgerId={params.ledgerId} />
+            <CategoryForm ledgerId={params.ledgerId} />
         </main>
-
     );
 }
