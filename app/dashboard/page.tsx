@@ -38,11 +38,7 @@ export default function Page() {
                             <Image width={16} height={16} src="/icons/directory_explorer-0.png" alt="directoryexplorer" />
                             <h4 className="my-0 font-weight-normal">Exploring - Boekje 3</h4>
                         </div>
-                        <Link href="/">
-                            <div className="btn close-button">
-                                X
-                            </div>
-                        </Link>
+                        <Link href="/"><div className="btn close-button">X</div></Link>
                     </div>
                     <div className="card-body">
                         <div className={styles.explorer}>
