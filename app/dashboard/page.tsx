@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useAuth } from '@/context/AuthContext';
 
 interface Ledger {
     id: string;
@@ -15,10 +16,17 @@ interface Ledger {
 
 export default function Page() {
     const [ledgers, setLedgers] = useState<Ledger[]>([]);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchItems = async () => {
-            const querySnapshot = await getDocs(collection(db, 'ledgers'));
+            if (!user) {
+                console.error("User is not authenticated");
+                return;
+            }
+
+            const q = query(collection(db, 'ledgers'), where('userId', '==', user.uid));
+            const querySnapshot = await getDocs(q);
             const fetchedLedgers: Ledger[] = querySnapshot.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,
@@ -27,7 +35,7 @@ export default function Page() {
         };
 
         fetchItems();
-    }, []);
+    }, [user]);
 
     return (
         <main>
