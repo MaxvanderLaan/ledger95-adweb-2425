@@ -28,10 +28,10 @@ export default async function LedgerLayout({ children, params }: { children: Rea
                             </div>
                             <div className={styles.buttonBar}>
                                 <div className="col-sm-10">
-                                    <button type="submit" className="standard-button">Ok</button>
+                                <Link href="/dashboard"><button className="standard-button">Ok</button></Link>
                                 </div>
                                 <div className="col-sm-10">
-                                    <button type="submit" className="standard-button">Cancel</button>
+                                <Link href="/"><button className="standard-button">Cancel</button></Link>
                                 </div>
                             </div>
                         </div>
