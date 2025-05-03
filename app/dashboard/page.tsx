@@ -13,7 +13,20 @@ export default function Page() {
 
     return (
         <main>
-            <p>page.tsx</p>
+            <Link href="/dashboard/ledger">
+                <div className={styles.folder}>
+                    <div className={styles.box}>+</div>
+                    <Image width={16} height={16} src="/icons/directory_open_file_mydocs-5.png" alt="directory_open_file_mydocs" />
+                    <p>Ledger</p>
+                </div>
+            </Link>
+            <Link href="/dashboard/archive">
+            <div className={styles.folder}>
+                <div className={styles.box}>+</div>
+                <Image width={16} height={16} src="/icons/directory_open_file_mydocs-5.png" alt="directory_open_file_mydocs" />
+                <p>Archive</p>
+            </div>
+            </Link>
         </main>
     );
 }
