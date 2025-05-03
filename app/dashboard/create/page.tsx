@@ -6,18 +6,30 @@ import { db } from '@/firebase';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import styles from '@/app/dashboard//create/create.module.css';
+import { useAuth } from '@/context/AuthContext';
+import styles from '@/app/dashboard/create/create.module.css';
 
 export default function Page() {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const router = useRouter();
-    
+    const { user } = useAuth();
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        
+        event.preventDefault();
+
+        if (!user) {
+            console.error("User is not authenticated");
+            return;
+        }
+
         try {
-            const docRef = await addDoc(collection(db, 'ledgers'), { name: name, description: description, });
+            const docRef = await addDoc(collection(db, 'ledgers'), {
+                name: name,
+                description: description,
+                owner: user.uid,
+                members: {},
+            });
             console.log("Written document with ID: ", docRef.id);
             setName('');
             setDescription('');
@@ -25,7 +37,7 @@ export default function Page() {
         } catch (error) {
             console.log("Error adding document: ", error);
         }
-    }
+    };
 
     return (
         <main>
@@ -56,7 +68,6 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-
         </main>
-    )
+    );
 }
