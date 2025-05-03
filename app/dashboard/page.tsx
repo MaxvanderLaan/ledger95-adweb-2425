@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useAuth } from '@/context/AuthContext';
 
 interface Ledger {
     id: string;
@@ -15,19 +16,39 @@ interface Ledger {
 
 export default function Page() {
     const [ledgers, setLedgers] = useState<Ledger[]>([]);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchItems = async () => {
-            const querySnapshot = await getDocs(collection(db, 'ledgers'));
-            const fetchedLedgers: Ledger[] = querySnapshot.docs.map((doc) => ({
+            if (!user) {
+                console.error("User is not authenticated");
+                return;
+            }
+
+            const userId = user.uid;
+
+            const ownerQuery = query(collection(db, 'ledgers'), where('owner', '==', userId));
+            const ownerSnapshot = await getDocs(ownerQuery);
+            const ownerLedgers = ownerSnapshot.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,
             })) as Ledger[];
-            setLedgers(fetchedLedgers);
+
+            const memberQuery = query(collection(db, 'ledgers'), where(`members.${userId}`, '!=', null));
+            const memberSnapshot = await getDocs(memberQuery);
+            const memberLedgers = memberSnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+            })) as Ledger[];
+
+            const allLedgers = [...ownerLedgers, ...memberLedgers];
+            const uniqueLedgers = Array.from(new Map(allLedgers.map(ledger => [ledger.id, ledger])).values());
+
+            setLedgers(uniqueLedgers);
         };
 
         fetchItems();
-    }, []);
+    }, [user]);
 
     return (
         <main>
@@ -53,6 +74,7 @@ export default function Page() {
                                 <div className={styles.functionalOptions}>
                                     <Link href={"/dashboard/create"}><span className={styles.underline}>C</span>reate</Link>
                                     <Link href={"/dashboard/edit"}><span className={styles.underline}>E</span>dit</Link>
+                                    <Link href={"/dashboard/invite"}><span className={styles.underline}>I</span>nvite</Link>
                                 </div>
                             </div>
                             <div className={styles.explorerHeader}>

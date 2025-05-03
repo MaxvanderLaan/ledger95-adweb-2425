@@ -9,24 +9,30 @@ import Cookies from 'js-cookie';
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const token = await userCredential.user.getIdToken();
-            Cookies.set('authToken', token, { expires: 7 });
-            
+            Cookies.set('authToken', token, { expires: 7, secure: true, sameSite: 'strict' });
             router.push('/');
         } catch (error) {
-            console.error('Error logging in:', error);
+            setError('Error logging in: ' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div>
             <h1>Login</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleLogin}>
                 <input
                     type="email"
@@ -42,7 +48,9 @@ const LoginPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Login'}
+                </button>
             </form>
         </div>
     );
