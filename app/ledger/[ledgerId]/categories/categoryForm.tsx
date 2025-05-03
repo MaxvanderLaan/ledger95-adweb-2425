@@ -18,7 +18,7 @@ export default function CategoryForm({ ledgerId }: Props) {
         event.preventDefault();
 
         try {
-            const docRef = await addDoc(collection(db, 'categories'), { 
+            const docRef = await addDoc(collection(db, 'categories'), {
                 name: name, budget: budget, experation: experation, ledgerId
             });
 
@@ -31,8 +31,7 @@ export default function CategoryForm({ ledgerId }: Props) {
     };
 
     return (
-        <div>
-            <div className={styles.container}>
+            <div className={styles.form}>
                 <form className="form-container" onSubmit={handleSubmit}>
                     <div className="form-item">
                         <label className="form-label">Name</label>
@@ -51,6 +50,5 @@ export default function CategoryForm({ ledgerId }: Props) {
                     </div>
                 </form>
             </div>
-        </div>
     );
 }

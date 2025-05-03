@@ -1,7 +1,19 @@
-.container{
-    padding: 15px;
+.categoriesWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Fill .content div */
+}
 
-    border: 1px red solid;
+.table {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form {
+    padding: 15px;
 }
 
 .recentlyAddedContainer{
@@ -16,8 +28,46 @@
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
 }
+.row{
+    padding-bottom: 40px;
+}
 
 .table{
     display: flex;
     flex-direction: column;
 }
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 5px;
+    align-items: center;
+}
+
+.info{
+    display: flex;
+    gap: 5px;
+}
+
+.actions{
+    display: flex;
+    gap: 5px;
+}
+
+.barContainer {
+    max-width: 900px;
+    width: 100%;
+    height: 24px;
+    background-color: #eee;
+    position: absolute;
+    margin-bottom: 10px;
+    overflow: visible;
+  }
+  
+  .bar {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+  }
