@@ -130,13 +130,13 @@ function DashboardContent({ children }: { children: ReactNode }) {
                                                 <p>{ledger.name}.exe</p>
                                             </div>
                                         </Link>
-                                        <Link href={`/dashboard/ledger/${ledger.id}/description`} className={styles.link}>
+                                        <Link href={`/notepad/${ledger.id}/description`} className={styles.link}>
                                             <div className={styles.folder}>
                                                 <Image width={16} height={16} src="/icons/notepad_file-2.png" alt="notepad" />
                                                 <p>Description.txt</p>
                                             </div>
                                         </Link>
-                                        <Link href={`/dashboard/ledger/${ledger.id}/invited`} className={styles.link}>
+                                        <Link href={`/notepad/${ledger.id}/invited`} className={styles.link}>
                                             <div className={styles.folder}>
                                                 <Image width={16} height={16} src="/icons/notepad_file-2.png" alt="notepad" />
                                                 <p>Invited.txt</p>
