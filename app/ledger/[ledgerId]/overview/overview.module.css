@@ -96,6 +96,7 @@
 .cell.delete {
     flex: 0 0 20%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    padding-right: 10px;
     align-items: center;
 }

@@ -1,52 +1,8 @@
 .container {
-    padding: 20px;
-    max-width: 600px;
-    margin: auto;
+    padding: 15px;
 }
 
-.heading {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.form {
+.buttonBar{
     display: flex;
-    flex-direction: column;
-}
-
-.formField {
-    margin-bottom: 15px;
-}
-
-.label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.input {
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.button {
-    padding: 10px 15px;
-    font-size: 1rem;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.submitButton {
-    background-color: #0070f3;
-    color: #fff;
-    margin-top: 10px;
-}
-
-.deleteButton {
-    background-color: red;
-    color: #fff;
-    margin-top: 20px;
+    gap: 10px;
 }

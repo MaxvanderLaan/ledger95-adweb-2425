@@ -178,7 +178,7 @@ body {
 
 /* standard button styling */
 
-.standard-button{
+.standard-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -921,4 +921,8 @@ TABLES
     padding: .75rem;
     vertical-align: top;
     border-top: 1px solid #c0c0c0;
+}
+
+a {
+    color: black;
 }
