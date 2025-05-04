@@ -15,8 +15,8 @@ export default function DesktopEnvironment() {
   return (
     <div className="desktop-app-container">
       <DesktopIcon
-        src="/icons/directory_explorer-0.png"
-        label="Dashboard"
+        src="/icons/computer_explorer_cool-0.png"
+        label="My Computer"
         onDoubleClick={() => {
           clearSelection();
           router.push('/dashboard');

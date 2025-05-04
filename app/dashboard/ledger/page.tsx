@@ -16,7 +16,7 @@ interface Ledger {
 
 export default function Page() {
     const [ledgers, setLedgers] = useState<Ledger[]>([]);   //variable holding Ledgers from db
-    const { setLedger } = useLedger(); //variable holding selected ledger for display in layout.tsx
+    const { ledger, setLedger } = useLedger(); //variable holding selected ledger for display in layout.tsx
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -33,8 +33,12 @@ export default function Page() {
         fetchItems();
     }, []);
 
-    const handleSelectLedger = (ledger: Ledger) => {
-        setLedger(ledger);
+    const handleSelectLedger = (clickedLedger: Ledger) => {
+        if (ledger?.id === clickedLedger.id) {
+            setLedger(null);
+        } else {
+            setLedger(clickedLedger);
+        }
     };
 
     return (
@@ -47,13 +51,17 @@ export default function Page() {
                 </div>
             </Link>
             <div className={styles.secondLevel}>
-                {ledgers.map((ledger) => (
-                    <div key={ledger.id} className={styles.folder} onClick={() => handleSelectLedger(ledger)}>
-                        <div className={styles.box}>+</div>
+            {ledgers.map((item) => {
+                const isActive = ledger?.id === item.id;
+                return (
+                    <div key={item.id} className={styles.folder} onClick={() => handleSelectLedger(item)} style={{ cursor: 'pointer' }}>
+                        <div className={styles.box}>{isActive ? '-' : '+'}</div>
                         <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="ledger icon" />
-                        <p>{ledger.name}</p>
+                        <p>{item.name}</p>
                     </div>
-                ))}
+                );
+            })}
+
             </div>
             <Link href="/dashboard/archive">
             <div className={styles.folder}>

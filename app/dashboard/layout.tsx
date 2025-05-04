@@ -73,7 +73,39 @@ function DashboardContent({ children }: { children: ReactNode }) {
                                         </div>
                                         {/* first level */}
                                         <div className={styles.firstLevel}>
-                                            {children}
+                                            <div className={styles.folder}>
+                                                <div className={styles.box}>-</div>
+                                                <Image width={16} height={16} src="/icons/computer_explorer_cool-0.png" alt="computer_explorer_cool" />
+                                                <p>My Computer</p>
+                                            </div>
+                                            <div className={styles.secondLevel}>
+                                            <div className={styles.folder}>
+                                                <div className={styles.box}>+</div>
+                                                <Image width={16} height={16} src="/icons/hard_disk_drive_cool-0.png" alt="hard_disk_drive_cool" />
+                                                <p>3½ Floppy (A:)</p>
+                                            </div>
+                                            <div className={styles.folder}>
+                                                <div className={styles.box}>-</div>
+                                                <Image width={16} height={16} src="/icons/hard_disk_drive_cool-0.png" alt="hard_disk_drive_cool" />
+                                                <p>(C:)</p>
+                                            </div>
+                                            <div className={styles.thirdLevel}>
+                                                {children}
+                                            </div>
+                                            <div className={styles.folder}>
+                                                <div className={styles.box}>+</div>
+                                                <Image width={16} height={16} src="/icons/cd_drive-3.png" alt="cd_drive" />
+                                                <p>Intl_us_cd1 (D:)</p>
+                                            </div>
+                                            <div className={`${styles.folder} ${styles.noBoxOffset}`}>
+                                                <Image width={16} height={16} src="/icons/directory_control_panel_cool-3.png" alt="directory_control_panel_cool" />
+                                                <p>Control Panel</p>
+                                            </div>
+                                            <div className={`${styles.folder} ${styles.noBoxOffset}`}>
+                                                <Image width={16} height={16} src="/icons/directory_network_conn-5.png" alt="directory_network_conn" />
+                                                <p>Printers</p>
+                                            </div>
+                                            </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/recycle_bin_full_cool-0.png" alt="recycle_bin_full_cool" />
                                                 <p>Recycle Bin</p>

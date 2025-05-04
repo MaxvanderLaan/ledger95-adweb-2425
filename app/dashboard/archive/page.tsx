@@ -50,7 +50,6 @@ export default function Page() {
             <div className={styles.secondLevel}>
                 {ledgers.map((ledger) => (
                     <div key={ledger.id} className={styles.folder}>
-                        <div className={styles.box}>+</div>
                         <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="ledger icon" />
                         <p>{ledger.name}</p>
                     </div>
