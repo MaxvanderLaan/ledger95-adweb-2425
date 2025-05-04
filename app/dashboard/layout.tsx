@@ -18,8 +18,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
 }
 
-//TODO:  Desktop icons don't make any scence since refactoring. maybe change Dashboard icon to explorer? and move the icons down a inset. 
-
 function DashboardContent({ children }: { children: ReactNode }) {
     const { ledger } = useLedger();
 

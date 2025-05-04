@@ -1,7 +1,8 @@
 .categoriesWrapper {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Fill .content div */
+    height: 100%;
+    /* Fill .content div */
 }
 
 .table {
@@ -16,7 +17,7 @@
     padding: 15px;
 }
 
-.recentlyAddedContainer{
+.recentlyAddedContainer {
     height: 200px;
     margin: 15px;
     padding: 5px;
@@ -28,46 +29,83 @@
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
 }
-.row{
-    padding-bottom: 40px;
+
+.row {
+    padding-bottom: 25px;
 }
 
-.table{
+.table {
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
-.header{
+.header {
     display: flex;
     justify-content: space-between;
     padding-bottom: 5px;
     align-items: center;
 }
 
-.info{
+.info {
     display: flex;
     gap: 5px;
 }
 
-.actions{
+.actions {
     display: flex;
     gap: 5px;
+    align-items: center;
 }
 
-.barContainer {
-    max-width: 900px;
+.negativeBarContainer {
     width: 100%;
     height: 24px;
-    background-color: #eee;
-    position: absolute;
+    position: relative;
     margin-bottom: 10px;
     overflow: visible;
-  }
-  
-  .bar {
+    display: flex;
+    width: 585px;
+}
+
+
+.positiveBarContainer {
+    width: 100%;
+    height: 24px;
+    position: relative;
+    margin-bottom: 10px;
+    overflow: visible;
+    display: flex;
+    width: 585px;
+}
+
+.negativeBar {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #f44336;
+    transition: width 0.3s ease;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.positiveBar {
     position: absolute;
     left: 0;
     height: 100%;
     background-color: #4caf50;
     transition: width 0.3s ease;
-  }
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.barFooter{
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 25px;
+}

@@ -7,9 +7,10 @@ import styles from '@/app/ledger/[ledgerId]/categories/category.module.css';
 
 interface Props {
     ledgerId: string;
+    setCategories: (categories: any) => void;
 }
 
-export default function CategoryForm({ ledgerId }: Props) {
+export default function CategoryForm({ ledgerId, setCategories }: Props) {
     const [name, setName] = useState<string>('');
     const [budget, setbudget] = useState<string>('');
     const [experation, setExperation] = useState<string>('');
@@ -19,8 +20,15 @@ export default function CategoryForm({ ledgerId }: Props) {
 
         try {
             const docRef = await addDoc(collection(db, 'categories'), {
-                name: name, budget: budget, experation: experation, ledgerId
+                name, budget, experation, ledgerId
             });
+
+            setCategories((prev: any) => [
+                ...prev,
+                {
+                    id: docRef.id, name, budget, experation, ledgerId
+                }
+            ]);
 
             setName('');
             setbudget('');

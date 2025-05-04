@@ -8,49 +8,61 @@ import CategoryRow from "@/app/ui/categoryRow";
 
 interface Props {
     ledgerId: string;
-}
-
-interface Categories {
-    id: string;
-    budget: string;
-    name: string;
-    experation: Date;
+    categories: {
+        id: string;
+        budget: string;
+        name: string;
+        experation: string;
+    }[];
 }
 
 interface Transaction {
     id: string;
     amount: string;
-    category: string;
+    categoryId: string;
     date: Date;
 }
 
-export default function CategoryTable({ ledgerId }: Props) {
-    const [categories, setCategories] = useState<Categories[]>([]);
-    
+export default function CategoryTable({ ledgerId, categories }: Props) {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
     useEffect(() => {
         const fetchItems = async () => {
-            //server-side filtering with queries.
-            const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
-            const fetchedTransactions: Categories[] = querySnapshot.docs.map((doc) => {
+            const querySnapshot = await getDocs(query(collection(db, 'transactions'),
+                where('ledgerId', '==', ledgerId), where('categoryId', '!=', '')));
+            const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
                 const data = doc.data();
                 return {
                     ...data,
-                    id: doc.id,
-                    //experation: data.experation.toDate(),
+                    id: doc.id
                 };
-            }) as Categories[];
+            }) as Transaction[];
 
-            setCategories(fetchedTransactions);
+            setTransactions(fetchedTransactions);
         };
 
         fetchItems();
     }, [ledgerId]);
 
+    // Takes all the linked transactions to a category and calculates the sum of the amount.
+    // Gets passed to CategoryRow for visualization.
+    const calculateSpentByCategory = (categoryId: string): number => {
+        const relevantTransactions = transactions.filter(
+            (transaction) => transaction.categoryId === categoryId
+        );
+    
+        const total = relevantTransactions.reduce((sum, transaction) => {
+            return sum + (typeof transaction.amount === 'number' ? transaction.amount : 0);
+        }, 0);
+    
+        return total;
+    };
+    
     return (
         <div className={styles.table}>
             {categories.map((category) => (
                 <div key={category.id}>
-                       <CategoryRow name={category.name} budget={parseFloat(category.budget)} spent={120} ledgerId={ledgerId}/>
+                    <CategoryRow name={category.name} budget={parseFloat(category.budget)} spent={calculateSpentByCategory(category.id)} ledgerId={ledgerId} experation={category.experation}/>
                 </div>
             ))}
         </div>
