@@ -1,0 +1,15 @@
+.line-graph-container {
+    padding: 1rem;
+}
+
+.dropdown-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dropdown-label {
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+}
