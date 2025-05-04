@@ -15,8 +15,8 @@ export default function DesktopEnvironment() {
   return (
     <div className="desktop-app-container">
       <DesktopIcon
-        src="/icons/directory_open_file_mydocs-5.png"
-        label="Ledger"
+        src="/icons/computer_explorer_cool-0.png"
+        label="My Computer"
         onDoubleClick={() => {
           clearSelection();
           router.push('/dashboard');
@@ -24,17 +24,6 @@ export default function DesktopEnvironment() {
         index={0}
         selected={selectedIndex === 0}
         onSelect={() => setSelectedIndex(0)}
-      />
-      <DesktopIcon
-        src="/icons/directory_open_file_mydocs-5.png"
-        label="Archive"
-        onDoubleClick={() => {
-          clearSelection();
-          router.push('/archive');
-        }}
-        index={1}
-        selected={selectedIndex === 1}
-        onSelect={() => setSelectedIndex(1)} 
       />
       <DesktopIcon
         src="/icons/recycle_bin_full_cool-0.png"

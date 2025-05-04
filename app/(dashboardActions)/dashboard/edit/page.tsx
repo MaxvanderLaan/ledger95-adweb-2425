@@ -6,7 +6,7 @@ import { db } from '@/firebase';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import styles from '@/app/dashboard/edit/edit.module.css';
+import styles from '@/app/(dashboardActions)/dashboard/edit/edit.module.css';
 
 interface Ledger {
     id: string;

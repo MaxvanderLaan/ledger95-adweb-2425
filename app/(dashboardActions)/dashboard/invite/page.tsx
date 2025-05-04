@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { db } from '@/firebase';
 import { useAuth } from '@/context/AuthContext';
-import styles from '@/app/dashboard/invite/invite.module.css';
+import styles from '@/app/(dashboardActions)/dashboard/invite/invite.module.css';
+import Link from 'next/link';
 
 interface Ledger {
     id: string;
@@ -84,29 +85,20 @@ export default function InvitePage() {
                         <div className="sub-header">
                             <h4>Invite User to Ledger</h4>
                         </div>
+                        <Link href="/dashboard">
+                             <div className="btn close-button">X</div>
+                         </Link>
                     </div>
                     <div className="card-body">
                         <div className={styles.container}>
                             <form className="form-container" onSubmit={handleSubmit}>
                                 <div className="form-item">
                                     <label className="form-label">Email</label>
-                                    <input
-                                        className="form-95 form-input"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="Enter email of the user to invite..."
-                                        required
-                                    />
+                                    <input className="form-95 form-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email of the user to invite..." required/>
                                 </div>
                                 <div className="form-item">
                                     <label className="form-label">Select Ledger</label>
-                                    <select
-                                        className="form-95 form-input"
-                                        value={selectedLedgerId}
-                                        onChange={(e) => setSelectedLedgerId(e.target.value)}
-                                        required
-                                    >
+                                    <select className="form-95 form-input" value={selectedLedgerId} onChange={(e) => setSelectedLedgerId(e.target.value)} required>
                                         <option value="" disabled>Select a ledger</option>
                                         {ledgers.map((ledger) => (
                                             <option key={ledger.id} value={ledger.id}>
