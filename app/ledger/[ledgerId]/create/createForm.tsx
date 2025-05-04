@@ -71,7 +71,7 @@ export default function CreateForm({ ledgerId }: Props) {
                         <input className="form-95 form-input" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="The transaction amount, e.g. '-100' or '+100'" />
                     </div>
                     <div className="form-item">
-                        <label className="form-label">Select Ledger</label>
+                        <label className="form-label">Select Category</label>
                         <select className="form-95 form-input" value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)} required>
                             <option value="" disabled>Select a category</option>
                             {categories.map((category) => (
