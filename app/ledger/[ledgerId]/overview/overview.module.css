@@ -24,12 +24,7 @@
     margin: 0 -5px;
 }
 
-.content{
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
+/* Header Styles */
 .label {
     display: flex;
     justify-content: center;
@@ -39,38 +34,44 @@
     height: 30px;
 }
 
-.label.left{
+.label.left {
     border-bottom: 2px solid #333333;
-    border-top: none;
-    border-left: none;
     border-right: 2px solid #333333;
     flex: 0 0 20%;
 }
 
-.label.middle{
+.label.middle {
     border-bottom: 2px solid #333333;
-    border-top: none;
-    border-left: none;
     border-right: 2px solid #333333;
-    flex: 0 0 50%;
+    flex: 0 0 40%;
 }
 
-.label.right{
+.label.right {
     border-bottom: 2px solid #333333;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    flex: 0 0 30%;
+    border-right: 2px solid #333333;
+    flex: 0 0 20%;
 }
 
-.row{
+.label.delete {
+    border-bottom: 2px solid #333333;
+    flex: 0 0 20%;
+}
+
+/* Content Styles */
+.content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.row {
     display: flex;
     padding-left: 2px;
     height: 20px;
     border-bottom: 1px solid #333333;
 }
 
-.cell{
+.cell {
     display: flex;
     padding-left: 2px;
     height: 20px;
@@ -83,12 +84,18 @@
     background-color: #f0f0f0;
 }
 
-.cell.left{
+.cell.left {
     flex: 0 0 20%;
 }
-.cell.middle{
-    flex: 0 0 50%;
+.cell.middle {
+    flex: 0 0 40%;
 }
-.cell.right{
-    flex: 0 0 30%;
+.cell.right {
+    flex: 0 0 20%;
+}
+.cell.delete {
+    flex: 0 0 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
