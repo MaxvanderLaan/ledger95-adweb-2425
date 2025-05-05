@@ -50,9 +50,9 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
                         <input className="form-95 form-input" type="text" value={budget} onChange={(e) => setbudget(e.target.value)} placeholder="The maximum budget, e.g. 5000" />
                     </div>
                     <div className="form-item">
-                        <label className="form-label">Experation date</label>
-                        <input className="form-95 form-input" type="text" value={experation} onChange={(e) => setExperation(e.target.value)} placeholder="A optional experation date, e.g.  May 4, 2025 at 12:00:00 AM UTC+2" />
-                    </div>
+                    <label className="form-label">Experation Date</label>
+                    <input type="date" name="experation" value={experation} onChange={(e) => setExperation(e.target.value)} className="form-95 form-input" />
+                </div>
                     <div className="form-button-item">
                         <button type="submit" className="standard-button">Create</button>
                     </div>
