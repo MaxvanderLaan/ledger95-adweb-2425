@@ -1,11 +1,5 @@
-export default async function BarGraphPage({ params }: { params: Promise<{ ledgerId: string }> }) {
-    const { ledgerId } = await params;
-    
-    return (
-        <main>
-            <h2>Overview for Ledger {ledgerId}</h2>
-            <p>This is the bar graph content for the ledger.</p>
-        </main>
+import BarGraph from './barGraph';
 
-    );
+export default function BarGraphPage({ params }: { params: { ledgerId: string } }) {
+    return <BarGraph ledgerId={params.ledgerId} />;
 }
