@@ -7,7 +7,6 @@ interface RegisterLayoutProps {
 const RegisterLayout: React.FC<RegisterLayoutProps> = ({ children }) => {
     return (
         <div>
-            <h1>Register Layout</h1>
             <main>{children}</main>
         </div>
     );

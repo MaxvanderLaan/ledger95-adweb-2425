@@ -7,7 +7,6 @@ interface LoginLayoutProps {
 const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
     return (
         <div>
-            <h1>Login Layout</h1>
             <main>{children}</main>
         </div>
     );

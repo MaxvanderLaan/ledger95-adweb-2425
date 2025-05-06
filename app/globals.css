@@ -207,7 +207,6 @@ body {
     color: #424242;
     box-shadow: -1px -1px #000 !important;
     outline: 0 !important;
-    background: url(/public/background.bmp);
 }
 
 .standard-button:active {
@@ -215,7 +214,6 @@ body {
     color: #424242;
     box-shadow: -1px -1px #000 !important;
     outline: 0 !important;
-    background: url(/public/background.bmp);
 }
 
 .standard-button.disabled,
@@ -393,7 +391,6 @@ Scrollbar (only chrome & safari)
 }
 
 ::-webkit-scrollbar-track {
-    background-image: url(/public/background.bmp)
 }
 
 ::-webkit-scrollbar-thumb:vertical {
@@ -481,7 +478,6 @@ Scrollbar (only chrome & safari)
     color: #424242;
     box-shadow: -1px -1px #000 !important;
     outline: 0 !important;
-    background: url(/public/background.bmp);
 }
 
 .btn:active {
@@ -489,7 +485,6 @@ Scrollbar (only chrome & safari)
     color: #424242;
     box-shadow: -1px -1px #000 !important;
     outline: 0 !important;
-    background: url(/public/background.bmp);
 }
 
 .btn-primary {
