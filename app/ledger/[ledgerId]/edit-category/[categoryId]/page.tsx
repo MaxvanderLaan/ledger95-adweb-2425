@@ -96,7 +96,7 @@ export default function EditCategory() {
                         <button type="submit" className="standard-button">Save</button>
                     </div>
                     <div className="form-button-item">
-                        <button onClick={handleDelete} className="standard-button">Delete</button>
+                        <button type="button" onClick={handleDelete} className="standard-button">Delete</button>
                     </div>
                 </div>
             </form>
