@@ -10,9 +10,10 @@ interface Props {
     maxWidth?: number;
     ledgerId: string;
     experation: string;
+    id: string;
 }
 
-export default function categoryRow({ name, budget, spent, ledgerId, experation }: Props) {
+export default function categoryRow({ name, budget, spent, ledgerId, experation, id }: Props) {
     const isNegative = Boolean(spent < 0);
     let positivePercentage = 0;
     let widthPercentage = 0;
@@ -45,7 +46,7 @@ export default function categoryRow({ name, budget, spent, ledgerId, experation 
                     ) : (
                         <div className={styles.experation}></div>
                     )}
-                    <Link href={`/ledger/${ledgerId}/categories/edit`}>
+                     <Link href={`/ledger/${ledgerId}/edit-category/${id}`}>
                         <button className="standard-button">Edit</button>
                     </Link>
 
