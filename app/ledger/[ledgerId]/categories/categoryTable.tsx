@@ -50,19 +50,24 @@ export default function CategoryTable({ ledgerId, categories }: Props) {
         const relevantTransactions = transactions.filter(
             (transaction) => transaction.categoryId === categoryId
         );
-    
+
         const total = relevantTransactions.reduce((sum, transaction) => {
             return sum + (typeof transaction.amount === 'number' ? transaction.amount : 0);
         }, 0);
-    
+
         return total;
     };
-    
+
     return (
         <div className={styles.table}>
             {categories.map((category) => (
                 <div key={category.id}>
-                    <CategoryRow name={category.name} budget={parseFloat(category.budget)} spent={calculateSpentByCategory(category.id)} ledgerId={ledgerId} experation={category.experation}/>
+                    <CategoryRow name={category.name}
+                        budget={parseFloat(category.budget)}
+                        spent={calculateSpentByCategory(category.id)}
+                        ledgerId={ledgerId}
+                        experation={category.experation}
+                        id={category.id} />
                 </div>
             ))}
         </div>
