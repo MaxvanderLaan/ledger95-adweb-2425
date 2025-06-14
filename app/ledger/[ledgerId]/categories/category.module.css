@@ -1,0 +1,111 @@
+.categoriesWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Fill .content div */
+}
+
+.table {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form {
+    padding: 15px;
+}
+
+.recentlyAddedContainer {
+    height: 200px;
+    margin: 15px;
+    padding: 5px;
+    background-color: white;
+    border-style: solid;
+    border-width: 2px;
+    border-top-color: #333333;
+    border-left-color: #333333;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+.row {
+    padding-bottom: 25px;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 5px;
+    align-items: center;
+}
+
+.info {
+    display: flex;
+    gap: 5px;
+}
+
+.actions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.negativeBarContainer {
+    width: 100%;
+    height: 24px;
+    position: relative;
+    margin-bottom: 10px;
+    overflow: visible;
+    display: flex;
+    width: 585px;
+}
+
+
+.positiveBarContainer {
+    width: 100%;
+    height: 24px;
+    position: relative;
+    margin-bottom: 10px;
+    overflow: visible;
+    display: flex;
+    width: 585px;
+}
+
+.negativeBar {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #f44336;
+    transition: width 0.3s ease;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.positiveBar {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.barFooter{
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 25px;
+}

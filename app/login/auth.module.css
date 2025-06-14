@@ -1,0 +1,13 @@
+.container{
+    width: 400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.signup{
+    display: flex;
+    font-size: 13px;
+    align-self: flex-start;
+}

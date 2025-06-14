@@ -1,0 +1,15 @@
+.barGraphContainer {
+    padding: 1rem;
+}
+
+.dropdownContainer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dropdownLabel {
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+}

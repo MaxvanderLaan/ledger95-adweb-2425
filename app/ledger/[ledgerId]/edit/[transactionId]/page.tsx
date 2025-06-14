@@ -1,0 +1,154 @@
+'use client';
+
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { db } from "@/firebase";
+import { doc, updateDoc, getDocs, collection, getDoc, deleteDoc, addDoc, serverTimestamp, query, where } from "firebase/firestore";
+import styles from "./edit.module.css";
+
+interface TransactionData {
+    amount: string;
+    date: string;
+}
+
+interface Categories {
+    id: string;
+    budget: string;
+    name: string;
+    experation: Date;
+}
+
+export default function EditTransaction() {
+    const router = useRouter();
+    const params = useParams() as { ledgerId: string; transactionId: string };
+    const { ledgerId, transactionId } = params;
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
+    const [categories, setCategories] = useState<Categories[]>([]);
+
+    const [transaction, setTransaction] = useState<TransactionData>({
+        amount: "",
+        date: "",
+    });
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTransaction = async () => {
+            try {
+                const transactionRef = doc(db, "transactions", transactionId);
+                const snapshot = await getDoc(transactionRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    const dateObj = data.date.toDate();
+                    setTransaction({
+                        amount: data.amount,
+                        date: dateObj.toISOString().split("T")[0],
+                    });
+                    setSelectedCategoryId(data.categoryId || '');
+                } else {
+                    console.error("Transaction not found");
+                }
+            } catch (error) {
+                console.error("Error fetching transaction:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTransaction();
+    }, [transactionId]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
+            const fetchedCategories: Categories[] = querySnapshot.docs.map((doc) => {
+                const data = doc.data();
+                return {
+                    ...data,
+                    id: doc.id
+                };
+            }) as Categories[];
+
+            setCategories(fetchedCategories);
+        };
+
+        fetchCategories();
+    }, []);
+
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setTransaction((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        try {
+            const transactionRef = doc(db, "transactions", transactionId);
+            await updateDoc(transactionRef, {
+                amount: transaction.amount,
+                date: new Date(transaction.date),
+                categoryId: selectedCategoryId,
+            });
+            router.push(`/ledger/${ledgerId}/overview`);
+        } catch (error) {
+            console.error("Error updating transaction:", error);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm("Are you sure you want to delete this transaction?")) {
+            return;
+        }
+        try {
+            const transactionRef = doc(db, "transactions", transactionId);
+            await deleteDoc(transactionRef);
+            router.push(`/ledger/${ledgerId}/overview`);
+        } catch (error) {
+            console.error("Error deleting transaction:", error);
+        }
+    };
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    return (
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className="form-container">
+                <div className="form-item">
+                    <label className="form-label">Amount</label>
+                    <input type="text" id="amount" name="amount" value={transaction.amount} onChange={handleChange} className="form-95 form-input" />
+                </div>
+                <div className="form-item">
+                    <label className="form-label">Date</label>
+                    <input type="date" id="date" name="date" value={transaction.date} onChange={handleChange} className="form-95 form-input" />
+                </div>
+
+                <div className="form-item">
+                    <label className="form-label">Category</label>
+                    <select className="form-95 form-input" value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)} required>
+                        <option value="" disabled>Select a category</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className={styles.buttonBar}>
+                    <div className="form-button-item">
+                        <button type="submit" className="standard-button">Save</button>
+                    </div>
+                    <div className="form-button-item">
+                        <button onClick={handleDelete} className="standard-button">Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+}
