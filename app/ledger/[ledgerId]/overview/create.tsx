@@ -21,6 +21,7 @@ export default function CreateForm({ ledgerId }: Props) {
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [categories, setCategories] = useState<Categories[]>([]);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -48,6 +49,7 @@ export default function CreateForm({ ledgerId }: Props) {
         event.preventDefault();
         setLoading(true);
         setError('');
+        setSuccess('');
 
         // Client-side validation.
         // Check if valid, not infinite and not 0.
@@ -68,6 +70,7 @@ export default function CreateForm({ ledgerId }: Props) {
 
             setSelectedCategoryId('');
             setAmount('');
+            setSuccess('Succesfully created transaction');
         } catch (error) {
             setError('Failed to create transaction: ' + (error as Error).message);
         } finally {
@@ -78,6 +81,7 @@ export default function CreateForm({ ledgerId }: Props) {
     return (
         <div className={styles.create}>
             {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             <form className="form-container" onSubmit={handleSubmit}>
                 <div className="form-item">
                     <label className="form-label">Amount</label>

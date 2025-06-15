@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import styles from '@/app/login/auth.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +16,8 @@ const LoginPage: React.FC = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const registered = searchParams.get('registered') === 'true';
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,6 +49,7 @@ const LoginPage: React.FC = () => {
                     <div className="card-body">
                         <div className={styles.container}>
                             {error && <p style={{ color: 'red' }}>Invalid email or password</p>}
+                            {registered && <p style={{ color: 'green' }}>Account created, You can now log in.</p>}
                             <form className="form-container" onSubmit={handleLogin}>
                                 <div className="form-item">
                                     <label className="form-label">Email</label>

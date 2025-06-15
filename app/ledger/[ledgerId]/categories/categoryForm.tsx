@@ -14,6 +14,7 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
     const [name, setName] = useState('');
     const [budget, setBudget] = useState('');
     const [expiration, setExpiration] = useState('');
+    const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -21,6 +22,7 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
         event.preventDefault();
         setLoading(true);
         setError('');
+        setSuccess('');
 
         // Client-side validation.
         const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
@@ -83,6 +85,7 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
             setName('');
             setBudget('');
             setExpiration('');
+            setSuccess('Succesfully created category');
         } catch (error) {
             setError('Failed to create category: ' + (error as Error).message);
         } finally {
@@ -93,6 +96,7 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
     return (
         <div className={styles.form}>
             {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             <form className="form-container" onSubmit={handleSubmit}>
                 <div className="form-item">
                     <label className="form-label">Name</label>

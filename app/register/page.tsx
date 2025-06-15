@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
         createdAt: new Date().toISOString(),
       });
 
-      router.push('/login');
+      router.push('/login?registered=true');
     } catch (error) {
       setError('Error registering: ' + (error as Error).message);
     } finally {
