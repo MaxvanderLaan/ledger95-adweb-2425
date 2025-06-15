@@ -30,8 +30,6 @@ export default function EditTransaction() {
         date: "",
     });
 
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         const fetchTransaction = async () => {
             try {
@@ -50,8 +48,6 @@ export default function EditTransaction() {
                 }
             } catch (error) {
                 console.error("Error fetching transaction:", error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -111,11 +107,7 @@ export default function EditTransaction() {
             console.error("Error deleting transaction:", error);
         }
     };
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
+    
     return (
         <div className={styles.container}>
             <form onSubmit={handleSubmit} className="form-container">

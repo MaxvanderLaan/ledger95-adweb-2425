@@ -18,7 +18,6 @@ export default function EditCategory() {
     const params = useParams() as { ledgerId: string; categoryId: string };
     const { ledgerId, categoryId } = params;
     const [category, setCategory] = useState<Categories | null>(null);
-    const [loading, setLoading] = useState(true);
 
     //load categories into category state.
     useEffect(() => {
@@ -29,13 +28,12 @@ export default function EditCategory() {
                 const data = docSnap.data();
                 setCategory({ id: docSnap.id, ...data } as Categories);
             }
-            setLoading(false);
         };
         fetchCategory();
     }, [categoryId]);
 
-    if (loading || !category) {
-        return <div>Loading...</div>;
+    if (!category) {
+        return null;
     }
 
     //handle form submissions
