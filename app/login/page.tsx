@@ -20,6 +20,7 @@ const LoginPage: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const token = await userCredential.user.getIdToken();

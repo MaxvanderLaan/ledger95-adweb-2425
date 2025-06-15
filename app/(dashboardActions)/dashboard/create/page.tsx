@@ -14,12 +14,31 @@ export default function Page() {
     const [description, setDescription] = useState<string>('');
     const router = useRouter();
     const { user } = useAuth();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
+        setError('');
 
         if (!user) {
-            console.error("User is not authenticated");
+            setError("User is not authenticated.");
+            return;
+        }
+
+        // Client-side validation.
+        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
+        if (!name.trim() || !nameRegex.test(name.trim())) {
+            setError("Please enter a valid ledger name (2–50 characters, no special symbols).");
+            setLoading(false);
+            return;
+        }
+
+        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/; // Only letters, numbers, space, apostrophe, dash
+        if (!description.trim() || !descriptionRegex.test(description.trim())) {
+            setError("Please enter a valid ledger description (2–150 characters, no special symbols).");
+            setLoading(false);
             return;
         }
 
@@ -30,12 +49,14 @@ export default function Page() {
                 owner: user.uid,
                 members: {},
             });
-            console.log("Written document with ID: ", docRef.id);
+
             setName('');
             setDescription('');
             router.push('/dashboard');
         } catch (error) {
-            console.log("Error adding document: ", error);
+            setError('Failed to create ledger: ' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -52,6 +73,7 @@ export default function Page() {
                     </div>
                     <div className="card-body"></div>
                     <div className={styles.container}>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                         <form className="form-container" onSubmit={handleSubmit}>
                             <div className="form-item">
                                 <label className="form-label">Name</label>
@@ -62,7 +84,7 @@ export default function Page() {
                                 <input className="form-95 form-input" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description of new ledger..." />
                             </div>
                             <div className="form-button-item">
-                                <button type="submit" className="standard-button">Create</button>
+                                <button type="submit" className="standard-button">{loading ? 'Processing...' : 'Create'}</button>
                             </div>
                         </form>
                     </div>

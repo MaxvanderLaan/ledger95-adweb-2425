@@ -24,17 +24,22 @@ export default function Page() {
     const [description, setDescription] = useState<string>('');
     const [archived, setArchived] = useState<boolean>(false);
     const router = useRouter();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchItems = async () => {
-            const querySnapshot = await getDocs(collection(db, 'ledgers'));
-            const fetchedLedgers: Ledger[] = querySnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id,
-            })) as Ledger[];
-            setLedgers(fetchedLedgers);
+            try {
+                const querySnapshot = await getDocs(collection(db, 'ledgers'));
+                const fetchedLedgers: Ledger[] = querySnapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                })) as Ledger[];
+                setLedgers(fetchedLedgers);
+            } catch (error) {
+                setError('Failed to fetch ledgers: ' + (error as Error).message);
+            }
         };
-
         fetchItems();
     }, []);
 
@@ -50,8 +55,25 @@ export default function Page() {
 
     const handleUpdate = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
+        setError('');
 
         if (!selectedId) return;
+
+        // Client-side validation.
+        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
+        if (!name.trim() || !nameRegex.test(name.trim())) {
+            setError("Please enter a valid ledger name (2–50 characters, no special symbols).");
+            setLoading(false);
+            return;
+        }
+
+        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/; // Only letters, numbers, space, apostrophe, dash
+        if (!description.trim() || !descriptionRegex.test(description.trim())) {
+            setError("Please enter a valid ledger description (2–150 characters, no special symbols).");
+            setLoading(false);
+            return;
+        }
 
         try {
             const ledgerRef = doc(db, 'ledgers', selectedId);
@@ -62,7 +84,9 @@ export default function Page() {
             });
             router.push('/dashboard');
         } catch (error) {
-            console.error("Error updating document: ", error);
+            setError('Failed to edit ledger: ' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -81,6 +105,7 @@ export default function Page() {
                     </div>
                     <div className="card-body"></div>
                     <div className={styles.container}>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                         {/* dropdown list */}
                         <div className="form-item">
                             <label className="form-label">Select a ledger</label>
@@ -109,15 +134,13 @@ export default function Page() {
                                 <div className="form-item">
                                     <label className="form-label">Archive</label>
                                     <div className="form-check">
-                                        <input id="archived" type="checkbox" className="form-checkbox" checked={archived} onChange={(e) => setArchived(e.target.checked)}/>
+                                        <input id="archived" type="checkbox" className="form-checkbox" checked={archived} onChange={(e) => setArchived(e.target.checked)} />
                                         <label htmlFor="archived" className="form-check-label"></label>
                                     </div>
 
                                 </div>
                                 <div className="form-button-item">
-                                    <button type="submit" className="standard-button">
-                                        Save Changes
-                                    </button>
+                                    <button type="submit" className="standard-button">{loading ? 'Processing...' : 'Save'}</button>
                                 </div>
                             </form>
                         )}

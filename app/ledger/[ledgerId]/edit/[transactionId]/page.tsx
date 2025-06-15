@@ -24,6 +24,8 @@ export default function EditTransaction() {
     const { ledgerId, transactionId } = params;
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [categories, setCategories] = useState<Categories[]>([]);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const [transaction, setTransaction] = useState<TransactionData>({
         amount: "",
@@ -43,45 +45,56 @@ export default function EditTransaction() {
                         date: data.date.toDate().toISOString().split('T')[0],
                     });
                     setSelectedCategoryId(data.categoryId || '');
-                } else {
-                    console.error("Transaction not found");
                 }
             } catch (error) {
-                console.error("Error fetching transaction:", error);
+                setError('Failed to fetch transaction: ' + (error as Error).message);
             }
         };
-
         fetchTransaction();
     }, [transactionId]);
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
-            const fetchedCategories: Categories[] = querySnapshot.docs.map((doc) => {
-                const data = doc.data();
-                return {
-                    ...data,
-                    id: doc.id
-                };
-            }) as Categories[];
-
-            setCategories(fetchedCategories);
+            try {
+                const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
+                const fetchedCategories: Categories[] = querySnapshot.docs.map((doc) => {
+                    const data = doc.data();
+                    return {
+                        ...data,
+                        id: doc.id
+                    };
+                }) as Categories[];
+                setCategories(fetchedCategories);
+            } catch (error) {
+                setError('Failed to fetch categories: ' + (error as Error).message);
+            }
         };
-
         fetchCategories();
     }, []);
 
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
         setTransaction((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
+        setLoading(true);
+        setError('');
+
+        // Client-side validation.
+        // Check if valid, not infinite and not 0 or negative.
+        const parsedAmount = parseFloat(transaction.amount);
+        if (isNaN(parsedAmount) || !isFinite(parsedAmount) || parsedAmount === 0) {
+            setError("Amount must be a valid number and not zero.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const transactionRef = doc(db, "transactions", transactionId);
             await updateDoc(transactionRef, {
@@ -89,9 +102,12 @@ export default function EditTransaction() {
                 date: Timestamp.fromDate(new Date(transaction.date)),
                 categoryId: selectedCategoryId,
             });
+
             router.push(`/ledger/${ledgerId}/overview`);
         } catch (error) {
-            console.error("Error updating transaction:", error);
+            setError('Failed to edit transaction: ' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -110,6 +126,7 @@ export default function EditTransaction() {
 
     return (
         <div className={styles.container}>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit} className="form-container">
                 <div className="form-item">
                     <label className="form-label">Amount</label>
@@ -122,7 +139,7 @@ export default function EditTransaction() {
 
                 <div className="form-item">
                     <label className="form-label">Category</label>
-                    <select className="form-95 form-input" value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)} required>
+                    <select className="form-95 form-input" value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)}>
                         <option value="" disabled>Select a category</option>
                         {categories.map((category) => (
                             <option key={category.id} value={category.id}>
@@ -134,7 +151,7 @@ export default function EditTransaction() {
 
                 <div className={styles.buttonBar}>
                     <div className="form-button-item">
-                        <button type="submit" className="standard-button">Save</button>
+                        <button type="submit" className="standard-button">{loading ? 'Processing...' : 'Save'}</button>
                     </div>
                     <div className="form-button-item">
                         <button onClick={handleDelete} className="standard-button">Delete</button>
