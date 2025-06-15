@@ -1,5 +1,11 @@
+.contentContainer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+}
 .overview {
-    height: 80%;
+    height: 70%;
     margin: 5px;
     padding: 0px 5px 5px 5px;
     background-color: white;
@@ -9,6 +15,10 @@
     border-left-color: #333333;
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
+}
+
+.create {
+    padding: 15px;
 }
 
 .table {

@@ -61,13 +61,12 @@ export default function CategoryTable({ ledgerId, categories }: Props) {
 
         return total;
     };
-    
+
     return (
         <div className={styles.table}>
             {categories.map((category) => (
 
                 <div key={category.id}>
-                    {/* <div><p>{category.experation}</p></div> //testing */}
                     <CategoryRow name={category.name}
                         budget={parseFloat(category.budget)}
                         spent={calculateSpentByCategory(category.id)}
