@@ -3,19 +3,19 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { db } from "@/firebase";
-import { doc, updateDoc, getDocs, collection, getDoc, deleteDoc, addDoc, serverTimestamp, query, where } from "firebase/firestore";
+import { doc, updateDoc, getDocs, collection, getDoc, deleteDoc, addDoc, serverTimestamp, Timestamp, query, where } from "firebase/firestore";
 import styles from "./edit.module.css";
 
 interface TransactionData {
     amount: string;
-    date: string;
+    date: string; //ISO string, only for input.
 }
 
 interface Categories {
     id: string;
     budget: string;
     name: string;
-    experation: Date;
+    experation: Timestamp;
 }
 
 export default function EditTransaction() {
@@ -40,7 +40,7 @@ export default function EditTransaction() {
                     const dateObj = data.date.toDate();
                     setTransaction({
                         amount: data.amount,
-                        date: dateObj.toISOString().split("T")[0],
+                        date: data.date.toDate().toISOString().split('T')[0],
                     });
                     setSelectedCategoryId(data.categoryId || '');
                 } else {
@@ -86,7 +86,7 @@ export default function EditTransaction() {
             const transactionRef = doc(db, "transactions", transactionId);
             await updateDoc(transactionRef, {
                 amount: transaction.amount,
-                date: new Date(transaction.date),
+                date: Timestamp.fromDate(new Date(transaction.date)),
                 categoryId: selectedCategoryId,
             });
             router.push(`/ledger/${ledgerId}/overview`);
@@ -107,7 +107,7 @@ export default function EditTransaction() {
             console.error("Error deleting transaction:", error);
         }
     };
-    
+
     return (
         <div className={styles.container}>
             <form onSubmit={handleSubmit} className="form-container">

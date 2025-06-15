@@ -2,6 +2,7 @@
 
 import styles from '@/app/ledger/[ledgerId]/categories/category.module.css';
 import Link from 'next/link';
+import { Timestamp } from 'firebase/firestore';
 
 interface Props {
     name: string;
@@ -9,11 +10,11 @@ interface Props {
     spent: number;
     maxWidth?: number;
     ledgerId: string;
-    experation: string;
+    expiration?: Timestamp;
     id: string;
 }
 
-export default function categoryRow({ name, budget, spent, ledgerId, experation, id }: Props) {
+export default function categoryRow({ name, budget, spent, ledgerId, expiration, id }: Props) {
     const isNegative = Boolean(spent < 0);
     let positivePercentage = 0;
     let widthPercentage = 0;
@@ -24,7 +25,7 @@ export default function categoryRow({ name, budget, spent, ledgerId, experation,
         const leftover = budget - spent;
         const spentPercentage = leftover / (budget / 100)
         positivePercentage = 100 - spentPercentage
-        widthPercentage = spentPercentage; 
+        widthPercentage = spentPercentage;
 
         // Check so green bar doesnt exceed its boundry.
         if (positivePercentage > 100) { widthPercentage = 100 }
@@ -32,6 +33,17 @@ export default function categoryRow({ name, budget, spent, ledgerId, experation,
         const excess = Math.abs(spent) - budget
         negativePercentage = (excess / budget) * 100
     }
+
+    console.log(expiration);
+    const formatExpirationDate = (ts: Timestamp) => {
+        if (!ts || !ts.toDate) return '';
+        const date = ts.toDate();
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `Expires on: ${mm}-${dd}-${yyyy}`;
+    };
+
 
     return (
         <div className={styles.row}>
@@ -41,12 +53,12 @@ export default function categoryRow({ name, budget, spent, ledgerId, experation,
                     <div>€{budget},-</div>
                 </div>
                 <div className={styles.actions}>
-                    {experation ? (
-                        <div className={styles.experation}>Expires on: {experation}</div>
+                    {expiration ? (
+                        <div className={styles.expiration}>{formatExpirationDate(expiration)}</div>
                     ) : (
-                        <div className={styles.experation}></div>
+                         <div className={styles.expiration}></div>
                     )}
-                     <Link href={`/ledger/${ledgerId}/edit-category/${id}`}>
+                    <Link href={`/ledger/${ledgerId}/edit-category/${id}`}>
                         <button className="standard-button">Edit</button>
                     </Link>
 

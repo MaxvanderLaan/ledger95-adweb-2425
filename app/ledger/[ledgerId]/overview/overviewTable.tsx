@@ -3,7 +3,7 @@
 import styles from './overview.module.css';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
 import Link from 'next/link';
 
 interface Props {
@@ -14,14 +14,14 @@ interface Transaction {
     id: string;
     amount: string;
     categoryId: string;
-    date: Date;
+    date: Timestamp;
 }
 
 interface Category {
     id: string;
     budget: string;
     name: string;
-    experation: string;
+    experation: Timestamp;
 }
 
 export default function OverviewTable({ ledgerId }: Props) {
@@ -39,7 +39,7 @@ export default function OverviewTable({ ledgerId }: Props) {
                 return {
                     ...data,
                     id: docSnap.id,
-                    date: data.date.toDate(),
+                    date: data.date as Timestamp,
                 };
             }) as Transaction[];
 
@@ -63,7 +63,6 @@ export default function OverviewTable({ ledgerId }: Props) {
             fetchItems();
         }, [ledgerId]);
 
-
     return (
         <div className={styles.overview}>
             <div className={styles.table}>
@@ -79,7 +78,7 @@ export default function OverviewTable({ ledgerId }: Props) {
                             <p className={`${styles.cell} ${styles.left}`}>{transaction.amount}</p>
                             <p className={`${styles.cell} ${styles.middle}`}>{categoriesMap.get(transaction.categoryId) || ''}</p>
                             <p className={`${styles.cell} ${styles.right}`}>
-                                {transaction.date.toLocaleDateString('en-GB')}
+                                {transaction.date.toDate().toLocaleDateString('en-US')}
                             </p>
                             <div className={`${styles.cell} ${styles.delete}`} style={{ display: 'flex', gap: '8px' }}>
                             <Link href={`/ledger/${ledgerId}/edit/${transaction.id}`}>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
 import styles from '@/app/ledger/[ledgerId]/categories/category.module.css';
 import CategoryRow from "@/app/ui/categoryRow";
 
@@ -12,7 +12,7 @@ interface Props {
         id: string;
         budget: string;
         name: string;
-        experation: string;
+        expiration: Timestamp;
     }[];
 }
 
@@ -20,16 +20,20 @@ interface Transaction {
     id: string;
     amount: string;
     categoryId: string;
-    date: Date;
+    date: Timestamp;
 }
 
 export default function CategoryTable({ ledgerId, categories }: Props) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+    // Fetch Transactions for calculations.
     useEffect(() => {
         const fetchItems = async () => {
             const querySnapshot = await getDocs(query(collection(db, 'transactions'),
-                where('ledgerId', '==', ledgerId), where('categoryId', '!=', '')));
+                where('ledgerId', '==', ledgerId), 
+                where('categoryId', '!=', ''))
+            );
+
             const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
                 const data = doc.data();
                 return {
@@ -57,16 +61,18 @@ export default function CategoryTable({ ledgerId, categories }: Props) {
 
         return total;
     };
-
+    
     return (
         <div className={styles.table}>
             {categories.map((category) => (
+
                 <div key={category.id}>
+                    {/* <div><p>{category.experation}</p></div> //testing */}
                     <CategoryRow name={category.name}
                         budget={parseFloat(category.budget)}
                         spent={calculateSpentByCategory(category.id)}
                         ledgerId={ledgerId}
-                        experation={category.experation}
+                        expiration={category.expiration}
                         id={category.id} />
                 </div>
             ))}

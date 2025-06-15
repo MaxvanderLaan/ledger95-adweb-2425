@@ -3,14 +3,14 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { db } from "@/firebase";
-import { doc, updateDoc, getDocs, collection, getDoc, deleteDoc, addDoc, serverTimestamp, query, where } from "firebase/firestore";
+import { doc, updateDoc, getDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import styles from "./edit.module.css";
 
 interface Categories {
     id: string;
     budget: string;
     name: string;
-    experation: Date;
+    experation: string;
 }
 
 export default function EditCategory() {
@@ -81,7 +81,7 @@ export default function EditCategory() {
                 </div>
                 <div className="form-item">
                     <label className="form-label">Date</label>
-                    <input type="date" name="experation" value={category?.experation ? new Date(category.experation).toISOString().split('T')[0] : ''} onChange={handleChange} />
+                    <input type="date" id="date" name="experation" value={category?.experation ? new Date(category.experation).toISOString().split('T')[0] : ''} onChange={handleChange} className="form-95 form-input"/>
                 </div>
                 <div className="form-item">
                     <label className="form-label">Name</label>

@@ -83,7 +83,7 @@ export default function MonthlyTable({ ledgerId }: Props) {
                                 <div key={id} className={styles.row}>
                                     <p className={`${styles.cell} ${styles.left}`}>{amount}</p>
                                     <p className={`${styles.cell} ${styles.middle}`}>{category}</p>
-                                    <p className={`${styles.cell} ${styles.right}`}>{date.toLocaleDateString('en-GB')}</p>
+                                    <p className={`${styles.cell} ${styles.right}`}>{date.toLocaleDateString('en-US')}</p>
                                 </div>
                             );
                         }

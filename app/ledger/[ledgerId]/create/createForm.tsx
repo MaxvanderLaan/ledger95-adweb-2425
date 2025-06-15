@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, FormEvent } from "react";
-import { useRouter } from 'next/navigation';
 import { db } from '@/firebase';
 import styles from '@/app/ledger/[ledgerId]/create/create.module.css';
-import { doc, updateDoc, getDocs, collection, addDoc, serverTimestamp, query, where } from "firebase/firestore";
+import { getDocs, collection, addDoc, serverTimestamp, query, where, Timestamp } from "firebase/firestore";
 
 interface Props {
     ledgerId: string;
@@ -14,7 +13,7 @@ interface Categories {
     id: string;
     budget: string;
     name: string;
-    experation: Date;
+    experation: Timestamp;
 }
 
 export default function CreateForm({ ledgerId }: Props) {
