@@ -40,11 +40,11 @@ function DashboardContent({ children }: { children: ReactNode }) {
                         <div className={styles.explorer}>
                             <div className={styles.explorerOptions}>
                                 <div className={styles.decorativeOptions}>
-                                    <p><span className={styles.underline}>F</span>ile</p>
-                                    <p><span className={styles.underline}>E</span>dit</p>
-                                    <p><span className={styles.underline}>V</span>iew</p>
-                                    <p><span className={styles.underline}>T</span>ools</p>
-                                    <p><span className={styles.underline}>H</span>elp</p>
+                                    <p className={styles.notInteractable}><span className={styles.underline}>F</span>ile</p>
+                                    <p className={styles.notInteractable}><span className={styles.underline}>E</span>dit</p>
+                                    <p className={styles.notInteractable}><span className={styles.underline}>V</span>iew</p>
+                                    <p className={styles.notInteractable}><span className={styles.underline}>T</span>ools</p>
+                                    <p className={styles.notInteractable}><span className={styles.underline}>H</span>elp</p>
                                 </div>
                                 <div className={styles.functionalOptions}>
                                     <Link href={"/dashboard/create"}><span className={styles.underline}>C</span>reate</Link>
@@ -53,9 +53,9 @@ function DashboardContent({ children }: { children: ReactNode }) {
                                 </div>
                             </div>
                             <div className={styles.explorerHeader}>
-                                <div className={styles.hiarchyHeader}>All Folders</div>
+                                <div className={styles.hiarchyHeader}><p className={styles.notInteractable}>All Folders</p></div>
                                 {ledger ? (
-                                    <div className={styles.folderHeader}>Contests of {ledger.name}</div>
+                                    <div className={styles.folderHeader}><p className={styles.notInteractable}>Contests of {ledger.name}</p></div>
                                 ) : (
                                     <div className={styles.folderHeader}></div>
                                 )}
@@ -67,25 +67,25 @@ function DashboardContent({ children }: { children: ReactNode }) {
                                     <div>
                                         <div className={styles.folder}>
                                             <Image width={16} height={16} src="/icons/desktop_w95-0.png" alt="desktop_w95" />
-                                            <p>Desktop</p>
+                                            <p className={styles.notInteractable}>Desktop</p>
                                         </div>
                                         {/* first level */}
                                         <div className={styles.firstLevel}>
                                             <div className={styles.folder}>
                                                 <div className={styles.box}>-</div>
                                                 <Image width={16} height={16} src="/icons/computer_explorer_cool-0.png" alt="computer_explorer_cool" />
-                                                <p>My Computer</p>
+                                                <p className={styles.notInteractable}>My Computer</p>
                                             </div>
                                             <div className={styles.secondLevel}>
                                             <div className={styles.folder}>
                                                 <div className={styles.box}>+</div>
                                                 <Image width={16} height={16} src="/icons/hard_disk_drive_cool-0.png" alt="hard_disk_drive_cool" />
-                                                <p>3½ Floppy (A:)</p>
+                                                <p className={styles.notInteractable}>3½ Floppy (A:)</p>
                                             </div>
                                             <div className={styles.folder}>
                                                 <div className={styles.box}>-</div>
                                                 <Image width={16} height={16} src="/icons/hard_disk_drive_cool-0.png" alt="hard_disk_drive_cool" />
-                                                <p>(C:)</p>
+                                                <p className={styles.notInteractable}>(C:)</p>
                                             </div>
                                             <div className={styles.thirdLevel}>
                                                 {children}
@@ -93,28 +93,28 @@ function DashboardContent({ children }: { children: ReactNode }) {
                                             <div className={styles.folder}>
                                                 <div className={styles.box}>+</div>
                                                 <Image width={16} height={16} src="/icons/cd_drive-3.png" alt="cd_drive" />
-                                                <p>Intl_us_cd1 (D:)</p>
+                                                <p className={styles.notInteractable}>Intl_us_cd1 (D:)</p>
                                             </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/directory_control_panel_cool-3.png" alt="directory_control_panel_cool" />
-                                                <p>Control Panel</p>
+                                                <p className={styles.notInteractable}>Control Panel</p>
                                             </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/directory_network_conn-5.png" alt="directory_network_conn" />
-                                                <p>Printers</p>
+                                                <p className={styles.notInteractable}>Printers</p>
                                             </div>
                                             </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/recycle_bin_full_cool-0.png" alt="recycle_bin_full_cool" />
-                                                <p>Recycle Bin</p>
+                                                <p className={styles.notInteractable}>Recycle Bin</p>
                                             </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/briefcase-4.png" alt="briefcase" />
-                                                <p>My Briefcase</p>
+                                                <p className={styles.notInteractable}>My Briefcase</p>
                                             </div>
                                             <div className={`${styles.folder} ${styles.noBoxOffset}`}>
                                                 <Image width={16} height={16} src="/icons/directory_closed_cool-3.png" alt="directory_open_cool" />
-                                                <p>Online Services</p>
+                                                <p className={styles.notInteractable}>Online Services</p>
                                             </div>
                                         </div>
                                     </div>
@@ -150,13 +150,13 @@ function DashboardContent({ children }: { children: ReactNode }) {
 
                             {ledger ? (
                                 <div className={styles.explorerFooter}>
-                                    <div className={styles.hiarchyBarFooter}>1 object(s) selected</div>
-                                    <div className={styles.folderBarFooter}>4.50KB</div>
+                                    <div className={styles.hiarchyBarFooter}><p className={styles.notInteractable}>1 object(s) selected</p></div>
+                                    <div className={styles.folderBarFooter}><p className={styles.notInteractable}>4.50KB</p></div>
                                 </div>
                             ) : (
                                 <div className={styles.explorerFooter}>
-                                    <div className={styles.hiarchyBarFooter}>0 object(s) selected</div>
-                                    <div className={styles.folderBarFooter}>0KB</div>
+                                    <div className={styles.hiarchyBarFooter}><p className={styles.notInteractable}>0 object(s) selected</p></div>
+                                    <div className={styles.folderBarFooter}><p className={styles.notInteractable}>0KB</p></div>
                                 </div>
                             )}
 

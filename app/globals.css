@@ -146,6 +146,10 @@ body {
     gap: 30px;
 }
 
+.desktop-app-container > *:hover {
+    cursor: pointer;
+}
+
 .desktop-icon {
     position: relative;
     display: flex;
