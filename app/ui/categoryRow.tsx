@@ -15,26 +15,25 @@ interface Props {
 }
 
 export default function categoryRow({ name, budget, spent, ledgerId, expiration, id }: Props) {
-    const isNegative = Boolean(spent < 0);
-    let positivePercentage = 0;
     let widthPercentage = 0;
+    let positivePercentage = 0;
     let negativePercentage = 0;
-    // WidthPercentage is used to fill in the bar, spentPercentage to calculate.
 
-    if (!isNegative) {
-        const leftover = budget - spent;
-        const spentPercentage = leftover / (budget / 100)
-        positivePercentage = 100 - spentPercentage
-        widthPercentage = spentPercentage;
-
-        // Check so green bar doesnt exceed its boundry.
-        if (positivePercentage > 100) { widthPercentage = 100 }
+    if (budget === 0) {
+        widthPercentage = 0;
+        positivePercentage = 0;
     } else {
-        const excess = Math.abs(spent) - budget
-        negativePercentage = (excess / budget) * 100
+        const remaining = budget + spent; // spent is negative if funds remain
+        const percentage = (remaining / budget) * 100;
+
+        widthPercentage = Math.max(0, Math.min(percentage, 100)); // Clamp between 0–100 for bar
+        positivePercentage = percentage;
+
+        if (percentage < 0) {
+            negativePercentage = Math.abs(percentage);
+        }
     }
 
-    console.log(expiration);
     const formatExpirationDate = (ts: Timestamp) => {
         if (!ts || !ts.toDate) return '';
         const date = ts.toDate();
@@ -43,7 +42,6 @@ export default function categoryRow({ name, budget, spent, ledgerId, expiration,
         const dd = String(date.getDate()).padStart(2, '0');
         return `Expires on: ${mm}-${dd}-${yyyy}`;
     };
-
 
     return (
         <div className={styles.row}>
@@ -56,29 +54,32 @@ export default function categoryRow({ name, budget, spent, ledgerId, expiration,
                     {expiration ? (
                         <div className={styles.expiration}>{formatExpirationDate(expiration)}</div>
                     ) : (
-                         <div className={styles.expiration}></div>
+                        <div className={styles.expiration}></div>
                     )}
                     <Link href={`/ledger/${ledgerId}/edit-category/${id}`}>
                         <button className="standard-button">Edit</button>
                     </Link>
-
                 </div>
             </div>
 
-            {isNegative ? (
-                <div className={styles.negativeBarContainer}>
-                    <div className={styles.negativeBar} style={{ width: `${negativePercentage}%` }}>€{spent}</div>
-                    <div className={styles.barFooter} style={{ width: `${negativePercentage}%` }}>
+            {positivePercentage >= 0 ? (
+                <div className={styles.positiveBarContainer}>
+                    <div className={styles.positiveBar} style={{ width: `${widthPercentage}%` }}>
+                        €{(budget + spent).toLocaleString()}
+                    </div>
+                    <div className={styles.barFooter} style={{ width: `${widthPercentage}%` }}>
                         <div>0%</div>
-                        <div>-{negativePercentage}%</div>
+                        <div>{positivePercentage.toFixed(0)}%</div>
                     </div>
                 </div>
             ) : (
-                <div className={styles.positiveBarContainer}>
-                    <div className={styles.positiveBar} style={{ width: `${widthPercentage}%` }}>€{spent}</div>
-                    <div className={styles.barFooter} style={{ width: `${widthPercentage}%` }}>
+                <div className={styles.negativeBarContainer}>
+                    <div className={styles.negativeBar} style={{ width: `${negativePercentage}%` }}>
+                        -€{Math.abs(budget + spent).toLocaleString()}
+                    </div>
+                    <div className={styles.barFooter} style={{ width: `${negativePercentage}%` }}>
                         <div>0%</div>
-                        <div>{positivePercentage}%</div>
+                        <div>-{negativePercentage.toFixed(0)}%</div>
                     </div>
                 </div>
             )}
