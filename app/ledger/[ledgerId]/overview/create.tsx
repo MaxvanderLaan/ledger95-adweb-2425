@@ -16,7 +16,7 @@ interface Categories {
     experation: Timestamp;
 }
 
-export default function CreateForm({ ledgerId }: Props) {
+export default function Create({ ledgerId }: Props) {
     const [amount, setAmount] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [categories, setCategories] = useState<Categories[]>([]);

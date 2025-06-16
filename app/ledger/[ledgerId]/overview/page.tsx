@@ -2,11 +2,19 @@ import OverviewTable from './overviewTable';
 import Create from './create';
 import styles from './overview.module.css';
 
-export default function OverviewPage({ params }: { params: { ledgerId: string } }) {
+interface Props {
+  params: {
+    ledgerId: string;
+  };
+}
+
+export default async function OverviewPage({ params }: Props) {
+    const { ledgerId } = await params;
+
     return (
         <div className={styles.contentContainer}>
-            <OverviewTable ledgerId={params.ledgerId} />
-            <Create ledgerId={params.ledgerId} />
+            <OverviewTable ledgerId={ledgerId} />
+            <Create ledgerId={ledgerId} />
         </div>
     );
 }

@@ -23,10 +23,10 @@ export default function categoryRow({ name, budget, spent, ledgerId, expiration,
         widthPercentage = 0;
         positivePercentage = 0;
     } else {
-        const remaining = budget + spent; // spent is negative if funds remain
+        const remaining = budget + spent;
         const percentage = (remaining / budget) * 100;
 
-        widthPercentage = Math.max(0, Math.min(percentage, 100)); // Clamp between 0–100 for bar
+        widthPercentage = Math.max(0, Math.min(percentage, 100));
         positivePercentage = percentage;
 
         if (percentage < 0) {
