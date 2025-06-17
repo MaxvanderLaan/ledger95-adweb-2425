@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import styles from '@/app/(dashboardActions)/dashboard/create/create.module.css';
+import styles from '@/app/(dashboard-actions)/dashboard/create/create.module.css';
 
 export default function Page() {
     const [name, setName] = useState<string>('');

@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Page from '../app/(dashboardActions)/dashboard/create/page';
+import Page from '../app/(dashboard-actions)/dashboard/create/page';
 
 jest.mock('../firebase', () => ({
   auth: {},
