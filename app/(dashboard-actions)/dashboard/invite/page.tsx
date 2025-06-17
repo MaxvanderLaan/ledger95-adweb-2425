@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { db } from '@/firebase';
 import { useAuth } from '@/context/AuthContext';
-import styles from '@/app/(dashboardActions)/dashboard/invite/invite.module.css';
+import styles from '@/app/(dashboard-actions)/dashboard/invite/invite.module.css';
 import Link from 'next/link';
 
 interface Ledger {
