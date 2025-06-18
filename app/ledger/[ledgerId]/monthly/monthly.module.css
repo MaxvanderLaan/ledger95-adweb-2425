@@ -95,3 +95,20 @@
 .cell.right{
     flex: 0 0 30%;
 }
+
+.loading, .error, .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+.empty {
+    color: #666;
+}
