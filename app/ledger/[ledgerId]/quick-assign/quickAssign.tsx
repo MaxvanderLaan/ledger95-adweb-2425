@@ -3,8 +3,8 @@
 import styles from './quickAssign.module.css';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, updateDoc, doc, Timestamp } from "firebase/firestore";
-import { DndContext, useDraggable, useDroppable, DragEndEvent, DragStartEvent, closestCenter, DragOverlay } from '@dnd-kit/core';
+import { collection, query, where, updateDoc, doc, Timestamp, onSnapshot } from "firebase/firestore";
+import { DndContext, DragEndEvent, DragStartEvent, closestCenter, DragOverlay } from '@dnd-kit/core';
 import DraggableTransaction from './DraggableTransaction';
 import DroppableCategory from './DroppableCategory';
 
@@ -35,39 +35,42 @@ export default function QuickAssign({ ledgerId }: Props) {
     const activeTransaction = transactions.find(tx => tx.id === activeId) || null;
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const querySnapshot = await getDocs(
-                query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId))
-            );
-            const fetched: Transaction[] = querySnapshot.docs.map((docSnap) => {
-                const data = docSnap.data();
-                return {
-                    ...data,
-                    id: docSnap.id,
-                    date: data.date as Timestamp,
-                };
-            }) as Transaction[];
+        const unsubscribeTransactions = onSnapshot(
+            query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId)),
+            (querySnapshot) => {
+                const fetched: Transaction[] = querySnapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        ...data,
+                        id: docSnap.id,
+                        date: data.date as Timestamp,
+                    };
+                }) as Transaction[];
+                setTransactions(fetched);
+            },
+            (error) => {
+                console.error("Error fetching transactions: ", error);
+            }
+        );
 
-            setTransactions(fetched);
+        const unsubscribeCategories = onSnapshot(
+            query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)),
+            (querySnapshot) => {
+                const fetched: Category[] = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as Category[];
+                setCategories(fetched);
+            },
+            (error) => {
+                console.error("Error fetching categories: ", error);
+            }
+        );
+
+        return () => {
+            unsubscribeTransactions();
+            unsubscribeCategories();
         };
-
-        fetchTransactions();
-    }, [ledgerId]);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const querySnapshot = await getDocs(
-                query(collection(db, 'categories'), where('ledgerId', '==', ledgerId))
-            );
-            const fetched: Category[] = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Category[];
-
-            setCategories(fetched);
-        };
-
-        fetchCategories();
     }, [ledgerId]);
 
     const handleDragStart = (event: DragStartEvent) => {
@@ -83,18 +86,19 @@ export default function QuickAssign({ ledgerId }: Props) {
         const transactionId = active.id as string;
         const categoryId = over.id as string;
 
-        // Optimistically update UI
+        const previousTransactions = [...transactions];
+
         setTransactions(prev =>
             prev.map(tx =>
                 tx.id === transactionId ? { ...tx, categoryId } : tx
             )
         );
 
-        // Persist to Firestore
         try {
             await updateDoc(doc(db, 'transactions', transactionId), { categoryId });
         } catch (error) {
             console.error('Failed to update transaction:', error);
+            setTransactions(previousTransactions);
         }
     };
 
@@ -128,7 +132,7 @@ export default function QuickAssign({ ledgerId }: Props) {
                             {activeTransaction.date.toDate().toLocaleDateString('en-US')}
                         </p>
                         <p className={`${styles.cell} ${styles.right}`}>
-                            {activeTransaction.categoryId || 'Unassigned'}
+                            {categoriesMap.get(activeTransaction.categoryId) || 'Unassigned'}
                         </p>
                     </div>
                 ) : null}
