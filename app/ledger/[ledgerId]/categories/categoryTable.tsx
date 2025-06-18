@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, query, where, Timestamp, onSnapshot } from "firebase/firestore";
 import styles from '@/app/ledger/[ledgerId]/categories/category.module.css';
 import CategoryRow from "@/app/ui/categoryRow";
 
@@ -25,54 +25,119 @@ interface Transaction {
 
 export default function CategoryTable({ ledgerId, categories }: Props) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Fetch Transactions for calculations.
     useEffect(() => {
-        const fetchItems = async () => {
-            const querySnapshot = await getDocs(query(collection(db, 'transactions'),
-                where('ledgerId', '==', ledgerId), 
-                where('categoryId', '!=', ''))
+        if (!ledgerId) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const q = query(
+                collection(db, 'transactions'),
+                where('ledgerId', '==', ledgerId),
+                where('categoryId', '!=', '')
             );
 
-            const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
-                const data = doc.data();
-                return {
-                    ...data,
-                    id: doc.id
-                };
-            }) as Transaction[];
+            const unsubscribe = onSnapshot(
+                q,
+                (querySnapshot) => {
+                    try {
+                        const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
+                            const data = doc.data();
+                            return {
+                                ...data,
+                                id: doc.id
+                            };
+                        }) as Transaction[];
 
-            setTransactions(fetchedTransactions);
-        };
+                        setTransactions(fetchedTransactions);
+                        setLoading(false);
+                    } catch (err) {
+                        setError('Error processing transactions');
+                        setLoading(false);
+                        console.error('Error processing transactions:', err);
+                    }
+                },
+                (err) => {
+                    setError('Error fetching transactions');
+                    setLoading(false);
+                    console.error('Error fetching transactions:', err);
+                }
+            );
 
-        fetchItems();
+            return () => unsubscribe();
+        } catch (err) {
+            setError('Failed to set up transactions listener');
+            setLoading(false);
+            console.error('Failed to set up transactions listener:', err);
+        }
     }, [ledgerId]);
 
-    // Takes all the linked transactions to a category and calculates the sum of the amount.
-    // Gets passed to CategoryRow for visualization.
     const calculateSpentByCategory = (categoryId: string): number => {
+        if (loading) return 0;
+
         const relevantTransactions = transactions.filter(
             (transaction) => transaction.categoryId === categoryId
         );
 
         const total = relevantTransactions.reduce((sum, transaction) => {
-            return sum + (typeof transaction.amount === 'number' ? transaction.amount : 0);
+            try {
+                let numericAmount: number;
+
+                if (typeof transaction.amount === 'string') {
+                    const cleanedAmount = transaction.amount.replace(/[^0-9.-]+/g, "");
+                    numericAmount = parseFloat(cleanedAmount);
+                } else if (typeof transaction.amount === 'number') {
+                    numericAmount = transaction.amount;
+                } else {
+                    numericAmount = 0;
+                }
+
+                if (isNaN(numericAmount)) {
+                    console.warn(`Invalid amount format for transaction ${transaction.id}: ${transaction.amount}`);
+                    return sum;
+                }
+
+                return sum + numericAmount;
+            } catch (err) {
+                console.error(`Error processing amount for transaction ${transaction.id}:`, err);
+                return sum;
+            }
         }, 0);
 
         return total;
     };
 
+    if (loading) {
+        return <div className={`${styles.table} loadingMessage`}>Loading transactions...</div>;
+    }
+
+    if (error) {
+        return <div className={`${styles.table} errorMessage`}>Error: {error}</div>;
+    }
+
+    if (categories.length === 0) {
+        return <div className={`${styles.table} emptyMessage`}>No categories found.</div>;
+    }
+
     return (
         <div className={styles.table}>
             {categories.map((category) => (
-
                 <div key={category.id}>
-                    <CategoryRow name={category.name}
+                    <CategoryRow
+                        name={category.name}
                         budget={parseFloat(category.budget)}
                         spent={calculateSpentByCategory(category.id)}
                         ledgerId={ledgerId}
                         expiration={category.expiration}
-                        id={category.id} />
+                        id={category.id}
+                    />
                 </div>
             ))}
         </div>
