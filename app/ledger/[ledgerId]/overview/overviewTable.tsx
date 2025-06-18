@@ -3,7 +3,7 @@
 import styles from './overview.module.css';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, query, where, Timestamp, onSnapshot } from "firebase/firestore";
 import Link from 'next/link';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Transaction {
     id: string;
     amount: string;
     categoryId: string;
-    date: Timestamp;
+    date: Timestamp | null;
 }
 
 interface Category {
@@ -30,38 +30,36 @@ export default function OverviewTable({ ledgerId }: Props) {
     const categoriesMap = new Map(categories.map(cat => [cat.id, cat.name]));
 
     useEffect(() => {
-        const fetchItems = async () => {
-            const querySnapshot = await getDocs(
-                query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId))
-            );
+        const q = query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId));
+        const unsubscribeTransactions = onSnapshot(q, (querySnapshot) => {
             const fetchedTransactions: Transaction[] = querySnapshot.docs.map((docSnap) => {
                 const data = docSnap.data();
                 return {
                     ...data,
                     id: docSnap.id,
-                    date: data.date as Timestamp,
+                    date: data.date ? data.date as Timestamp : null,
                 };
             }) as Transaction[];
 
             setTransactions(fetchedTransactions);
-        };
+        });
 
-        fetchItems();
+        return () => unsubscribeTransactions();
     }, [ledgerId]);
 
-        useEffect(() => {
-            const fetchItems = async () => {
-                const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
-                const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                })) as Category[];
-    
-                setCategories(fetchedCategories);
-            };
-    
-            fetchItems();
-        }, [ledgerId]);
+    useEffect(() => {
+        const q = query(collection(db, 'categories'), where('ledgerId', '==', ledgerId));
+        const unsubscribeCategories = onSnapshot(q, (querySnapshot) => {
+            const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            })) as Category[];
+
+            setCategories(fetchedCategories);
+        });
+
+        return () => unsubscribeCategories();
+    }, [ledgerId]);
 
     return (
         <div className={styles.overview}>
@@ -78,7 +76,7 @@ export default function OverviewTable({ ledgerId }: Props) {
                             <p className={`${styles.cell} ${styles.left}`}>{transaction.amount}</p>
                             <p className={`${styles.cell} ${styles.middle}`}>{categoriesMap.get(transaction.categoryId) || ''}</p>
                             <p className={`${styles.cell} ${styles.right}`}>
-                                {transaction.date.toDate().toLocaleDateString('en-US')}
+                                {transaction.date ? transaction.date.toDate().toLocaleDateString('en-US') : 'No date'}
                             </p>
                             <div className={`${styles.cell} ${styles.delete}`} style={{ display: 'flex', gap: '8px' }}>
                             <Link href={`/ledger/${ledgerId}/edit/${transaction.id}`}>
