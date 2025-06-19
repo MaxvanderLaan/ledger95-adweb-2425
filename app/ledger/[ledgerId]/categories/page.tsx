@@ -3,7 +3,7 @@
 import { use } from 'react';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, query, where, Timestamp, onSnapshot } from "firebase/firestore";
 import CategoryForm from './categoryForm';
 import CategoryTable from './categoryTable';
 import styles from '@/app/ledger/[ledgerId]/categories/category.module.css';
@@ -22,32 +22,68 @@ interface Category {
 export default function CategoriesPage({ params }: Props) {
     const { ledgerId } = use(params);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Categories are fetched in page and passed to the table.
-    // The setCategory is passed to the form part of the page.
-    // This allows for a shared list between the table and the form.
     useEffect(() => {
-        const fetchItems = async () => {
-            const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
+        if (!ledgerId) {
+            setLoading(false);
+            return;
+        }
 
-            const invalidDateThreshhold = new Date();
-            invalidDateThreshhold.setDate(invalidDateThreshhold.getDate() - 1); // Yesterday.
+        setLoading(true);
+        setError(null);
 
-            const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                expiration: doc.data().expiration ?? null,
-                ...doc.data(),
-            }))
-                .filter((category) => {
-                    // Filter expired categories.
-                    return !category.expiration || category.expiration.toDate() >= invalidDateThreshhold;
-                }) as Category[];
+        try {
+            const q = query(collection(db, 'categories'), where('ledgerId', '==', ledgerId));
+            const unsubscribe = onSnapshot(
+                q,
+                (querySnapshot) => {
+                    try {
+                        const invalidDateThreshhold = new Date();
+                        invalidDateThreshhold.setDate(invalidDateThreshhold.getDate() - 1); // Yesterday.
 
-            setCategories(fetchedCategories);
-        };
+                        const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
+                            id: doc.id,
+                            expiration: doc.data().expiration ?? null,
+                            ...doc.data(),
+                        }))
+                            .filter((category) => {
+                                // Filter expired categories.
+                                if (!category.expiration) return true;
+                                return category.expiration.toDate() >= invalidDateThreshhold;
+                            }) as Category[];
 
-        fetchItems();
+                        setCategories(fetchedCategories);
+                        setLoading(false);
+                    } catch (err) {
+                        setError('Error processing categories');
+                        setLoading(false);
+                        console.error('Error processing categories:', err);
+                    }
+                },
+                (err) => {
+                    setError('Error fetching categories');
+                    setLoading(false);
+                    console.error('Error fetching categories:', err);
+                }
+            );
+
+            return () => unsubscribe();
+        } catch (err) {
+            setError('Failed to set up categories listener');
+            setLoading(false);
+            console.error('Failed to set up categories listener:', err);
+        }
     }, [ledgerId]);
+
+    if (loading) {
+        return <div className={`${styles.categoriesWrapper} loadingMessage`}>Loading categories...</div>;
+    }
+
+    if (error) {
+        return <div className={`${styles.categoriesWrapper} errorMessage`}>Error: {error}</div>;
+    }
 
     return (
         <div className={styles.categoriesWrapper}>

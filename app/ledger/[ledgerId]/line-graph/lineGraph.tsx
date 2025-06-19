@@ -14,9 +14,8 @@ import {
     TimeScale,
 } from 'chart.js';
 import { db } from '@/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import 'chartjs-adapter-date-fns';
-
 import styles from './lineGraph.module.css';
 
 ChartJS.register(
@@ -62,58 +61,60 @@ export default function LineGraph({ ledgerId }: Props) {
     }, []);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const querySnapshot = await getDocs(
-                query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId))
-            );
-            const transactions: Transaction[] = querySnapshot.docs.map((docSnap) => {
-                const data = docSnap.data();
-                return {
-                    id: docSnap.id,
-                    date: data.date.toDate(),
-                    amount: parseFloat(data.amount),
-                    category: data.category,
-                };
-            });
+        const fetchTransactions = () => {
+            const q = query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const transactions: Transaction[] = querySnapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        date: data.date.toDate(),
+                        amount: parseFloat(data.amount),
+                        category: data.category,
+                    };
+                });
 
-            const uniqueMonths = new Set<string>();
-            const uniqueYears = new Set<string>();
+                const uniqueMonths = new Set<string>();
+                const uniqueYears = new Set<string>();
 
-            transactions.forEach((transaction) => {
-                const month = transaction.date.toISOString().slice(0, 7);
-                const year = transaction.date.toISOString().slice(0, 4);
-                uniqueMonths.add(month);
-                uniqueYears.add(year);
-            });
+                transactions.forEach((transaction) => {
+                    const month = transaction.date.toISOString().slice(0, 7);
+                    const year = transaction.date.toISOString().slice(0, 4);
+                    uniqueMonths.add(month);
+                    uniqueYears.add(year);
+                });
 
-            setMonths(Array.from(uniqueMonths));
-            setYears(Array.from(uniqueYears));
+                setMonths(Array.from(uniqueMonths));
+                setYears(Array.from(uniqueYears));
 
-            const filteredTransactions = transactions.filter((transaction) =>
-                transaction.date.toISOString().startsWith(`${selectedYear}-${selectedMonth}`)
-            );
+                const filteredTransactions = transactions.filter((transaction) =>
+                    transaction.date.toISOString().startsWith(`${selectedYear}-${selectedMonth}`)
+                );
 
-            const dailySums: { [key: string]: number } = {};
-            filteredTransactions.forEach((transaction) => {
-                const dateKey = transaction.date.toISOString().slice(0, 10);
-                dailySums[dateKey] = (dailySums[dateKey] || 0) + transaction.amount;
-            });
+                const dailySums: { [key: string]: number } = {};
+                filteredTransactions.forEach((transaction) => {
+                    const dateKey = transaction.date.toISOString().slice(0, 10);
+                    dailySums[dateKey] = (dailySums[dateKey] || 0) + transaction.amount;
+                });
 
-            if (selectedYear && selectedMonth) {
-                const daysInMonth = new Date(Number(selectedYear), Number(selectedMonth), 0).getDate();
-                let runningTotal = 0;
-                const completeData: DailyData[] = [];
+                if (selectedYear && selectedMonth) {
+                    const daysInMonth = new Date(Number(selectedYear), Number(selectedMonth), 0).getDate();
+                    let runningTotal = 0;
+                    const completeData: DailyData[] = [];
 
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dayString = day.toString().padStart(2, '0');
-                    const dateStr = `${selectedYear}-${selectedMonth}-${dayString}`;
-                    runningTotal += dailySums[dateStr] || 0;
-                    completeData.push({ date: dateStr, total: runningTotal });
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dayString = day.toString().padStart(2, '0');
+                        const dateStr = `${selectedYear}-${selectedMonth}-${dayString}`;
+                        runningTotal += dailySums[dateStr] || 0;
+                        completeData.push({ date: dateStr, total: runningTotal });
+                    }
+                    setDailyData(completeData);
+                } else {
+                    setDailyData([]);
                 }
-                setDailyData(completeData);
-            } else {
-                setDailyData([]);
-            }
+            });
+
+            return () => unsubscribe();
         };
 
         fetchTransactions();
@@ -172,28 +173,28 @@ export default function LineGraph({ ledgerId }: Props) {
 
     return (
         <div className={styles.lineGraphContainer}>
-        <div className={styles.dropdownContainer}>
-            <label className={styles.dropdownLabel}>
-            Select Year:
-            <select value={selectedYear} onChange={handleYearChange}>
-                {years.map((year) => (
-                    <option key={year} value={year}>
-                        {year}
-                    </option>
-                ))}
-            </select>
-            </label>
-            <label className={styles.dropdownLabel}>
-            Select Month:
-            <select value={selectedMonth} onChange={handleMonthChange}>
-                {months.map((month) => (
-                    <option key={month} value={month.split('-')[1]}>
-                        {new Date(month + '-01').toLocaleString('default', { month: 'long' })}
-                    </option>
-                ))}
-            </select>
-            </label>
-        </div>
+            <div className={styles.dropdownContainer}>
+                <label className={styles.dropdownLabel}>
+                    Select Year:
+                    <select value={selectedYear} onChange={handleYearChange}>
+                        {years.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label className={styles.dropdownLabel}>
+                    Select Month:
+                    <select value={selectedMonth} onChange={handleMonthChange}>
+                        {months.map((month) => (
+                            <option key={month} value={month.split('-')[1]}>
+                                {new Date(month + '-01').toLocaleString('default', { month: 'long' })}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+            </div>
             <Line data={data} options={options} />
         </div>
     );

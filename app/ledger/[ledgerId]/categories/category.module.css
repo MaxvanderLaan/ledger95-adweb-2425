@@ -115,3 +115,20 @@
     justify-content: space-between;
     padding-top: 25px;
 }
+
+.loadingMessage, .errorMessage, .emptyMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.errorMessage {
+    color: #f44336;
+}
+
+.emptyMessage {
+    color: #666;
+}
