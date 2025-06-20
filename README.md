@@ -8,11 +8,16 @@ First, run the npm install command to install the dependencies:
 npm install
 ```
 
-Create a firebase.js file in the src folder of the project.
+Create an .env.local file in the root folder of your project with the following keys:
 
-Copy the firebase config from the app in the project from the firebase console.
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-Paste the config in the firebase.js file you have created.
+Add your firebase keys to your .env.local file.
 
 Run the development server:
 
