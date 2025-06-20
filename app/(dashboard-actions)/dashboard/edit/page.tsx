@@ -15,8 +15,6 @@ interface Ledger {
     archived: boolean;
 }
 
-// All ledgers will be available here for editing, even archived ones.
-// Edit will be the main way to archive / de-archive ledgers.
 export default function Page() {
     const [ledgers, setLedgers] = useState<Ledger[]>([]);
     const [selectedId, setSelectedId] = useState<string>('');
@@ -60,15 +58,14 @@ export default function Page() {
 
         if (!selectedId) return;
 
-        // Client-side validation.
-        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
+        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/;
         if (!name.trim() || !nameRegex.test(name.trim())) {
             setError("Please enter a valid ledger name (2–50 characters, no special symbols).");
             setLoading(false);
             return;
         }
 
-        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/; // Only letters, numbers, space, apostrophe, dash
+        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/;
         if (!description.trim() || !descriptionRegex.test(description.trim())) {
             setError("Please enter a valid ledger description (2–150 characters, no special symbols).");
             setLoading(false);

@@ -51,8 +51,6 @@ export default function Create({ ledgerId }: Props) {
         setError('');
         setSuccess('');
 
-        // Client-side validation.
-        // Check if valid, not infinite and not 0.
         const parsedBudget = parseFloat(amount);
         if (isNaN(parsedBudget) || !isFinite(parsedBudget) || parsedBudget === 0) {
             setError("Amount must be a valid number and not zero.");

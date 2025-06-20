@@ -8,7 +8,7 @@ import styles from "./edit.module.css";
 
 interface TransactionData {
     amount: string;
-    date: string; //ISO string, only for input.
+    date: string;
 }
 
 interface Categories {
@@ -86,8 +86,6 @@ export default function EditTransaction() {
         setLoading(true);
         setError('');
 
-        // Client-side validation.
-        // Check if valid, not infinite and not 0 or negative.
         const parsedAmount = parseFloat(transaction.amount);
         if (isNaN(parsedAmount) || !isFinite(parsedAmount) || parsedAmount === 0) {
             setError("Amount must be a valid number and not zero.");

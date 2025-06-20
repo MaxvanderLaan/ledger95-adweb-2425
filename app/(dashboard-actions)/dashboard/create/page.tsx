@@ -27,15 +27,14 @@ export default function Page() {
             return;
         }
 
-        // Client-side validation.
-        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
+        const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/;
         if (!name.trim() || !nameRegex.test(name.trim())) {
             setError("Please enter a valid ledger name (2–50 characters, no special symbols).");
             setLoading(false);
             return;
         }
 
-        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/; // Only letters, numbers, space, apostrophe, dash
+        const descriptionRegex = /^[a-zA-Z0-9\s'-]{2,150}$/;
         if (!description.trim() || !descriptionRegex.test(description.trim())) {
             setError("Please enter a valid ledger description (2–150 characters, no special symbols).");
             setLoading(false);

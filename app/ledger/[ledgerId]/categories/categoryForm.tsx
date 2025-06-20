@@ -24,7 +24,6 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
         setError('');
         setSuccess('');
 
-        // Client-side validation.
         const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
         if (!name.trim() || !nameRegex.test(name.trim())) {
             setError("Please enter a valid category name (2–50 characters, no special symbols).");
@@ -32,7 +31,6 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
             return;
         }
 
-        // Check if valid, not infinite and not 0 or negative.
         const parsedBudget = parseFloat(budget);
         if (isNaN(parsedBudget) || !isFinite(parsedBudget) || parsedBudget <= 0) {
             setError("Budget must be a positive number greater than zero.");
@@ -40,7 +38,6 @@ export default function CategoryForm({ ledgerId, setCategories }: Props) {
             return;
         }
 
-        // Check if date is valid if filled, and not in the past.
         if (expiration) {
             const date = new Date(expiration);
 

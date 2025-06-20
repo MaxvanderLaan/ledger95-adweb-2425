@@ -49,7 +49,6 @@ export default function CategoriesPage({ params }: Props) {
                             ...doc.data(),
                         }))
                             .filter((category) => {
-                                // Filter expired categories.
                                 if (!category.expiration) return true;
                                 return category.expiration.toDate() >= invalidDateThreshhold;
                             }) as Category[];

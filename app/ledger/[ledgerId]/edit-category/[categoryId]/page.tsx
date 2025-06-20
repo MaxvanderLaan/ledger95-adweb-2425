@@ -21,7 +21,6 @@ export default function EditCategory() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Load categories into category state.
     useEffect(() => {
         const fetchCategory = async () => {
             try {
@@ -47,13 +46,11 @@ export default function EditCategory() {
         return null;
     }
 
-    // Handle form submissions.
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setLoading(true);
         setError('');
 
-        // Client-side validation.
         const nameRegex = /^[a-zA-Z0-9\s'-]{2,50}$/; // Only letters, numbers, space, apostrophe, dash
         if (!category.name.trim() || !nameRegex.test(category.name.trim())) {
             setError("Please enter a valid category name (2–50 characters, no special symbols).");
@@ -61,7 +58,6 @@ export default function EditCategory() {
             return;
         }
 
-        // Check if valid, not infinite and not 0 or negative.
         const parsedBudget = parseFloat(category.budget);
         if (isNaN(parsedBudget) || !isFinite(parsedBudget) || parsedBudget <= 0) {
             setError("Budget must be a positive number greater than zero.");
@@ -69,7 +65,6 @@ export default function EditCategory() {
             return;
         }
 
-        // Check if date is valid if filled, and not in the past.
         if (category.expiration) {
             const date = new Date(category.expiration);
 
@@ -98,7 +93,6 @@ export default function EditCategory() {
                 budget: category.budget
             };
 
-            // If date is included, update it. If it's empty, empty the field in the db.
             if (category.expiration) {
                 updateData.expiration = Timestamp.fromDate(new Date(category.expiration));
             } else {
@@ -114,7 +108,6 @@ export default function EditCategory() {
         }
     };
 
-    // Handle delete action.
     const handleDelete = async () => {
         if (!confirm("Are you sure you want to delete this category?")) {
             return;
@@ -128,7 +121,6 @@ export default function EditCategory() {
         }
     };
 
-    // Update form field value based on user input.
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setCategory((prev) => prev ? { ...prev, [name]: value } : null);

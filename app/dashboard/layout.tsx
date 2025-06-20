@@ -6,11 +6,7 @@ import Image from 'next/image';
 import { LedgerProvider, useLedger } from '@/context/LedgerContext';
 import { ReactNode } from 'react';
 
-// We want to display some date conditional if the user has clicked a ledger to view. 
-// We use a LedgerContest to track if a ledger has been selected and conditionally extract the needed data for the UI.
-
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    // Ledgerprovider should wrap the layout, before its defined.
     return (
         <LedgerProvider>
             <DashboardContent>{children}</DashboardContent>
