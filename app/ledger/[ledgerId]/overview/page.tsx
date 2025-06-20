@@ -3,9 +3,7 @@ import Create from './create';
 import styles from './overview.module.css';
 
 interface Props {
-  params: {
-    ledgerId: string;
-  };
+    params: Promise<{ ledgerId: string }>;
 }
 
 export default async function OverviewPage({ params }: Props) {

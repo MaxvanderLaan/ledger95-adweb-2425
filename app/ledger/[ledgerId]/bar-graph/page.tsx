@@ -1,9 +1,7 @@
 import BarGraph from './barGraph';
 
 interface Props {
-  params: {
-    ledgerId: string;
-  };
+  params: Promise<{ ledgerId: string }>;
 }
 
 export default async function BarGraphPage({ params }: Props) {
