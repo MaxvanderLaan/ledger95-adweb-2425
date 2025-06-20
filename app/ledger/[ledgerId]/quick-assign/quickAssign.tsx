@@ -30,11 +30,16 @@ export default function QuickAssign({ ledgerId }: Props) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const categoriesMap = new Map(categories.map(cat => [cat.id, cat.name]));
     const activeTransaction = transactions.find(tx => tx.id === activeId) || null;
 
     useEffect(() => {
+        setLoading(true);
+        setError(null);
+
         const unsubscribeTransactions = onSnapshot(
             query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId)),
             (querySnapshot) => {
@@ -47,9 +52,12 @@ export default function QuickAssign({ ledgerId }: Props) {
                     };
                 }) as Transaction[];
                 setTransactions(fetched);
+                setLoading(false);
             },
-            (error) => {
-                console.error("Error fetching transactions: ", error);
+            (err) => {
+                console.error("Error fetching transactions: ", err);
+                setError("Failed to load transactions.");
+                setLoading(false);
             }
         );
 
@@ -61,9 +69,12 @@ export default function QuickAssign({ ledgerId }: Props) {
                     ...doc.data(),
                 })) as Category[];
                 setCategories(fetched);
+                setLoading(false);
             },
-            (error) => {
-                console.error("Error fetching categories: ", error);
+            (err) => {
+                console.error("Error fetching categories: ", err);
+                setError("Failed to load categories.");
+                setLoading(false);
             }
         );
 
@@ -75,11 +86,13 @@ export default function QuickAssign({ ledgerId }: Props) {
 
     const handleDragStart = (event: DragStartEvent) => {
         setActiveId(event.active.id as string);
+        setError(null);
     };
 
     const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event;
         setActiveId(null);
+        setError(null);
 
         if (!over) return;
 
@@ -87,7 +100,6 @@ export default function QuickAssign({ ledgerId }: Props) {
         const categoryId = over.id as string;
 
         const previousTransactions = [...transactions];
-
         setTransactions(prev =>
             prev.map(tx =>
                 tx.id === transactionId ? { ...tx, categoryId } : tx
@@ -96,8 +108,9 @@ export default function QuickAssign({ ledgerId }: Props) {
 
         try {
             await updateDoc(doc(db, 'transactions', transactionId), { categoryId });
-        } catch (error) {
-            console.error('Failed to update transaction:', error);
+        } catch (err) {
+            console.error('Failed to update transaction:', err);
+            setError('Failed to assign transaction: ' + (err as Error).message);
             setTransactions(previousTransactions);
         }
     };
@@ -105,23 +118,39 @@ export default function QuickAssign({ ledgerId }: Props) {
     return (
         <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className={styles.QAContainer}>
-                <div className={styles.table}>
-                    <div className={styles.headers}>
-                        <p className={`${styles.label} ${styles.left}`}>Amount</p>
-                        <p className={`${styles.label} ${styles.middle}`}>Date</p>
-                        <p className={`${styles.label} ${styles.right}`}>Category</p>
-                    </div>
-                    <div className={styles.content} style={{ overflowY: activeId ? 'hidden' : 'auto' }}>
-                        {transactions.map(transaction => (
-                            <DraggableTransaction key={transaction.id} transaction={transaction} categoryName={categoriesMap.get(transaction.categoryId) || ''} activeId={activeId}/>))}
-                    </div>
-                </div>
+                {loading && <p>Loading data...</p>}
+                {!loading && (
+                    <>
+                        <div className={styles.table}>
+                            <div className={styles.headers}>
+                                <p className={`${styles.label} ${styles.left}`}>Amount</p>
+                                <p className={`${styles.label} ${styles.middle}`}>Date</p>
+                                <p className={`${styles.label} ${styles.right}`}>Category</p>
+                            </div>
+                            <div className={styles.content} style={{ overflowY: activeId ? 'hidden' : 'auto' }}>
+                                {transactions.length === 0 ? (
+                                    <p className={styles.noData}>No transactions found for this ledger.</p>
+                                ) : (
+                                    transactions.map(transaction => (
+                                        <DraggableTransaction key={transaction.id} transaction={transaction} categoryName={categoriesMap.get(transaction.categoryId) || ''} activeId={activeId}/>
+                                    ))
+                                )}
+                            </div>
+                        </div>
 
-                <div className={styles.categories}>
-                    {categories.map(category => (
-                        <DroppableCategory key={category.id} category={category} />
-                    ))}
-                </div>
+                        {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '10px', marginBottom: '10px' }}>{error}</p>}
+
+                        <div className={styles.categories}>
+                            {categories.length === 0 ? (
+                                <p className={styles.noData}>No categories found for this ledger.</p>
+                            ) : (
+                                categories.map(category => (
+                                    <DroppableCategory key={category.id} category={category} />
+                                ))
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
 
             <DragOverlay>
