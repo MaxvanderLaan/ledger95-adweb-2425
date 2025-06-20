@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { db } from '@/firebase';
 import { useAuth } from '@/context/AuthContext';
-import styles from '@/app/(dashboardActions)/dashboard/invite/invite.module.css';
+import styles from '@/app/(dashboard-actions)/dashboard/invite/invite.module.css';
 import Link from 'next/link';
 
 interface Ledger {
@@ -17,14 +17,15 @@ export default function InvitePage() {
     const [email, setEmail] = useState('');
     const [selectedLedgerId, setSelectedLedgerId] = useState('');
     const [ledgers, setLedgers] = useState<Ledger[]>([]);
-    const [message, setMessage] = useState('');
     const router = useRouter();
     const { user } = useAuth();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchLedgers = async () => {
             if (!user) {
-                setMessage("User is not authenticated");
+                setError("User is not authenticated");
                 return;
             }
 
@@ -37,18 +38,19 @@ export default function InvitePage() {
                 })) as Ledger[];
                 setLedgers(fetchedLedgers);
             } catch (error) {
-                setMessage("Error fetching ledgers: " + (error as Error).message);
+                setError('Failed to fetch ledgers: ' + (error as Error).message);
             }
         };
-
         fetchLedgers();
     }, [user]);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
+        setError('');
 
         if (!user) {
-            setMessage("User is not authenticated");
+            setError("User is not authenticated.");
             return;
         }
 
@@ -57,7 +59,7 @@ export default function InvitePage() {
             const usersSnapshot = await getDocs(usersQuery);
 
             if (usersSnapshot.empty) {
-                setMessage("No user found with this email");
+                setError("No user found with this email");
                 return;
             }
 
@@ -69,11 +71,13 @@ export default function InvitePage() {
                 [`members.${invitedUserId}`]: 'viewer'
             });
 
-            setMessage("User invited successfully");
             setEmail('');
             setSelectedLedgerId('');
+            router.push('/dashboard');
         } catch (error) {
-            setMessage("Error inviting user: " + (error as Error).message);
+            setError("Error inviting user: " + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,15 +90,16 @@ export default function InvitePage() {
                             <h4>Invite User to Ledger</h4>
                         </div>
                         <Link href="/dashboard">
-                             <div className="btn close-button">X</div>
-                         </Link>
+                            <div className="btn close-button">X</div>
+                        </Link>
                     </div>
                     <div className="card-body">
                         <div className={styles.container}>
+                            {error && <p style={{ color: 'red' }}>{error}</p>}
                             <form className="form-container" onSubmit={handleSubmit}>
                                 <div className="form-item">
                                     <label className="form-label">Email</label>
-                                    <input className="form-95 form-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email of the user to invite..." required/>
+                                    <input className="form-95 form-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email of the user to invite..." required />
                                 </div>
                                 <div className="form-item">
                                     <label className="form-label">Select Ledger</label>
@@ -108,10 +113,9 @@ export default function InvitePage() {
                                     </select>
                                 </div>
                                 <div className="form-button-item">
-                                    <button type="submit" className="standard-button">Invite</button>
+                                    <button type="submit" className="standard-button">{loading ? 'Processing...' : 'Invite'}</button>
                                 </div>
                             </form>
-                            {message && <p className={styles.message}>{message}</p>}
                         </div>
                     </div>
                 </div>

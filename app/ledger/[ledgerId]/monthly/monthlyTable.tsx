@@ -3,7 +3,7 @@
 import styles from './monthly.module.css';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot, Timestamp } from "firebase/firestore";
 import { format } from 'date-fns';
 
 interface Props {
@@ -25,24 +25,66 @@ interface Row {
 
 export default function MonthlyTable({ ledgerId }: Props) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchItems = async () => {
-            // Server-side filtering with queries.
-            const querySnapshot = await getDocs(query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId)));
-            const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
-                const data = doc.data();
-                return {
-                    ...data,
-                    id: doc.id,
-                    date: data.date.toDate(),
-                };
-            }) as Transaction[];
+        if (!ledgerId) return;
 
-            setTransactions(fetchedTransactions);
-        };
+        setLoading(true);
+        setError(null);
 
-        fetchItems();
+        try {
+            const q = query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId));
+            const unsubscribe = onSnapshot(q,
+                (querySnapshot) => {
+                    try {
+                        const fetchedTransactions: Transaction[] = querySnapshot.docs.map((doc) => {
+                            const data = doc.data();
+                            let date = new Date();
+
+                            if (data.date) {
+                                if (data.date instanceof Timestamp) {
+                                    date = data.date.toDate();
+                                } else if (data.date.seconds) {
+                                    date = new Date(data.date.seconds * 1000);
+                                } else if (typeof data.date === 'object' && data.date.toDate) {
+                                    date = data.date.toDate();
+                                } else if (typeof data.date === 'string') {
+                                    date = new Date(data.date);
+                                } else if (typeof data.date === 'number') {
+                                    date = new Date(data.date);
+                                }
+                            }
+
+                            return {
+                                ...data,
+                                id: doc.id,
+                                date: date,
+                            };
+                        }) as Transaction[];
+
+                        setTransactions(fetchedTransactions);
+                        setLoading(false);
+                    } catch (err) {
+                        setError('Error processing transaction data');
+                        setLoading(false);
+                        console.error('Error processing transaction data:', err);
+                    }
+                },
+                (err) => {
+                    setError('Error fetching transactions');
+                    setLoading(false);
+                    console.error('Error fetching transactions:', err);
+                }
+            );
+
+            return () => unsubscribe();
+        } catch (err) {
+            setError('Error setting up transaction listener');
+            setLoading(false);
+            console.error('Error setting up transaction listener:', err);
+        }
     }, [ledgerId]);
 
     const groupedRows: Row[] = [];
@@ -50,15 +92,30 @@ export default function MonthlyTable({ ledgerId }: Props) {
 
     const sortedTransactions = [...transactions].sort((a, b) => b.date.getTime() - a.date.getTime());
 
-    // Takes the sorted list and checks for each date if the month changes, if so print a month row.
-    // Pushes date rows and month rows onto the groupedRows.
     for (const transaction of sortedTransactions) {
-        const monthLabel = format(transaction.date, 'MMMM yyyy');
-        if (monthLabel !== lastMonth) {
-            groupedRows.push({ type: 'month', label: monthLabel });
-            lastMonth = monthLabel;
+        try {
+            const monthLabel = format(transaction.date, 'MMMM yyyy');
+            if (monthLabel !== lastMonth) {
+                groupedRows.push({ type: 'month', label: monthLabel });
+                lastMonth = monthLabel;
+            }
+            groupedRows.push({ type: 'transaction', transaction: transaction });
+        } catch (err) {
+            console.error('Error processing transaction:', transaction.id, err);
+            continue;
         }
-        groupedRows.push({ type: 'transaction', transaction: transaction });
+    }
+
+    if (loading) {
+        return <div className={styles.monthly}>Loading transactions...</div>;
+    }
+
+    if (error) {
+        return <div className={styles.monthly}>Error: {error}</div>;
+    }
+
+    if (groupedRows.length === 0) {
+        return <div className={styles.monthly}>No transactions found.</div>;
     }
 
     return (
@@ -83,10 +140,11 @@ export default function MonthlyTable({ ledgerId }: Props) {
                                 <div key={id} className={styles.row}>
                                     <p className={`${styles.cell} ${styles.left}`}>{amount}</p>
                                     <p className={`${styles.cell} ${styles.middle}`}>{category}</p>
-                                    <p className={`${styles.cell} ${styles.right}`}>{date.toLocaleDateString('en-GB')}</p>
+                                    <p className={`${styles.cell} ${styles.right}`}>{date.toLocaleDateString('en-US')}</p>
                                 </div>
                             );
                         }
+                        return null;
                     })}
                 </div>
             </div>

@@ -1,5 +1,13 @@
 import BarGraph from './barGraph';
 
-export default function BarGraphPage({ params }: { params: { ledgerId: string } }) {
-    return <BarGraph ledgerId={params.ledgerId} />;
+interface Props {
+  params: {
+    ledgerId: string;
+  };
 }
+
+export default async function BarGraphPage({ params }: Props) {
+    const { ledgerId } = await params;
+    return <BarGraph ledgerId={ledgerId} />;
+}
+ 

@@ -14,9 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${W95FA.className} antialiased`}>
+        <div className="background-image" />
         <AuthProvider>
           <div className="site-wrapper">
-            <div className="background-image" />
             <main className="page-content">
               {children}
               <DesktopEnvironment />

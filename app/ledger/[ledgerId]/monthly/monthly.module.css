@@ -1,5 +1,5 @@
 .monthly {
-    height: 80%;
+    height: 70%;
     margin: 5px;
     padding: 0px 5px 5px 5px;
     background-color: white;
@@ -94,4 +94,21 @@
 }
 .cell.right{
     flex: 0 0 30%;
+}
+
+.loading, .error, .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+.empty {
+    color: #666;
 }

@@ -1,5 +1,13 @@
 import MonthlyTable from './monthlyTable';
 
-export default function MonthlyPage({ params }: { params: { ledgerId: string } }) {
-    return <MonthlyTable ledgerId={params.ledgerId} />;
+interface Props {
+  params: {
+    ledgerId: string;
+  };
+}
+
+export default async function MonthlyPage({ params }: Props) {
+    const { ledgerId } = await params;
+
+    return <MonthlyTable ledgerId={ledgerId} />;
 }

@@ -12,7 +12,7 @@ import {
     Legend,
 } from 'chart.js';
 import { db } from '@/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import styles from './barGraph.module.css';
 
 ChartJS.register(
@@ -63,12 +63,16 @@ export default function BarGraph({ ledgerId }: Props) {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const querySnapshot = await getDocs(query(collection(db, 'categories'), where('ledgerId', '==', ledgerId)));
-            const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Category[];
-            setCategories(fetchedCategories);
+            const q = query(collection(db, 'categories'), where('ledgerId', '==', ledgerId));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const fetchedCategories: Category[] = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as Category[];
+                setCategories(fetchedCategories);
+            });
+
+            return () => unsubscribe();
         };
 
         fetchCategories();
@@ -76,48 +80,50 @@ export default function BarGraph({ ledgerId }: Props) {
 
     useEffect(() => {
         const fetchTransactions = async () => {
-            const querySnapshot = await getDocs(
-                query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId))
-            );
-            const transactions: Transaction[] = querySnapshot.docs.map((docSnap) => {
-                const data = docSnap.data();
-                return {
-                    id: docSnap.id,
-                    date: data.date.toDate(),
-                    amount: parseFloat(data.amount),
-                    categoryId: data.categoryId,
-                };
+            const q = query(collection(db, 'transactions'), where('ledgerId', '==', ledgerId));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const transactions: Transaction[] = querySnapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        date: data.date.toDate(),
+                        amount: parseFloat(data.amount),
+                        categoryId: data.categoryId,
+                    };
+                });
+
+                const uniqueMonths = new Set<string>();
+                const uniqueYears = new Set<string>();
+
+                transactions.forEach((transaction) => {
+                    const month = transaction.date.toISOString().slice(0, 7);
+                    const year = transaction.date.toISOString().slice(0, 4);
+                    uniqueMonths.add(month);
+                    uniqueYears.add(year);
+                });
+
+                setMonths(Array.from(uniqueMonths));
+                setYears(Array.from(uniqueYears));
+
+                const filteredTransactions = transactions.filter((transaction) =>
+                    transaction.date.toISOString().startsWith(`${selectedYear}-${selectedMonth}`)
+                );
+
+                const categoryTotals: { [key: string]: number } = {};
+                filteredTransactions.forEach((transaction) => {
+                    const categoryName = categories.find(cat => cat.id === transaction.categoryId)?.name || 'Unknown';
+                    categoryTotals[categoryName] = (categoryTotals[categoryName] || 0) + transaction.amount;
+                });
+
+                const categoryDataArray: CategoryData[] = Object.keys(categoryTotals).map((category) => ({
+                    category,
+                    total: categoryTotals[category],
+                }));
+
+                setCategoryData(categoryDataArray);
             });
 
-            const uniqueMonths = new Set<string>();
-            const uniqueYears = new Set<string>();
-
-            transactions.forEach((transaction) => {
-                const month = transaction.date.toISOString().slice(0, 7);
-                const year = transaction.date.toISOString().slice(0, 4);
-                uniqueMonths.add(month);
-                uniqueYears.add(year);
-            });
-
-            setMonths(Array.from(uniqueMonths));
-            setYears(Array.from(uniqueYears));
-
-            const filteredTransactions = transactions.filter((transaction) =>
-                transaction.date.toISOString().startsWith(`${selectedYear}-${selectedMonth}`)
-            );
-
-            const categoryTotals: { [key: string]: number } = {};
-            filteredTransactions.forEach((transaction) => {
-                const categoryName = categories.find(cat => cat.id === transaction.categoryId)?.name || 'Unknown';
-                categoryTotals[categoryName] = (categoryTotals[categoryName] || 0) + transaction.amount;
-            });
-
-            const categoryDataArray: CategoryData[] = Object.keys(categoryTotals).map((category) => ({
-                category,
-                total: categoryTotals[category],
-            }));
-
-            setCategoryData(categoryDataArray);
+            return () => unsubscribe();
         };
 
         fetchTransactions();

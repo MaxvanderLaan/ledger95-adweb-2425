@@ -1,11 +1,5 @@
-.contentContainer {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
-}
-.overview {
-    height: 70%;
+.QAContainer{
+    height: 40%;
     margin: 5px;
     padding: 0px 5px 5px 5px;
     background-color: white;
@@ -15,10 +9,6 @@
     border-left-color: #333333;
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
-}
-
-.create {
-    padding: 15px;
 }
 
 .table {
@@ -47,26 +37,22 @@
 .label.left {
     border-bottom: 2px solid #333333;
     border-right: 2px solid #333333;
-    flex: 0 0 20%;
+    flex: 0 0 30%;
 }
 
 .label.middle {
     border-bottom: 2px solid #333333;
     border-right: 2px solid #333333;
-    flex: 0 0 40%;
+    flex: 0 0 30%;
 }
 
 .label.right {
     border-bottom: 2px solid #333333;
     border-right: 2px solid #333333;
-    flex: 0 0 20%;
+    flex: 0 0 40%;
 }
 
-.label.delete {
-    border-bottom: 2px solid #333333;
-    flex: 0 0 20%;
-}
-
+/* Content Styles */
 .content {
     height: 100%;
     overflow-y: auto;
@@ -94,13 +80,13 @@
 }
 
 .cell.left {
-    flex: 0 0 20%;
+    flex: 0 0 30%;
 }
 .cell.middle {
-    flex: 0 0 40%;
+    flex: 0 0 30%;
 }
 .cell.right {
-    flex: 0 0 20%;
+    flex: 0 0 40%;
 }
 .cell.delete {
     flex: 0 0 20%;
@@ -108,4 +94,37 @@
     justify-content: flex-end;
     padding-right: 10px;
     align-items: center;
+}
+
+.categories{
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 2px;
+
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.categoryElement{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: silver;
+    width: 97px;
+    height: 50px;
+
+    border-style: solid;
+    border-width: 2px;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #333333;
+    border-bottom-color: #333333;
+
+    font-size: 16px;
+    text-align: center;
+    overflow: hidden;
+    padding: 0 5px;
 }

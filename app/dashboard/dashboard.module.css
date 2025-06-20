@@ -185,3 +185,10 @@
 .link:visited {
     color: black;
 }
+
+/* text thats not interactable should have a slightly off color
+making valid interactions more clear to the user */
+.notInteractable{
+    color: #000000;
+    /* font-style: italic; */
+}

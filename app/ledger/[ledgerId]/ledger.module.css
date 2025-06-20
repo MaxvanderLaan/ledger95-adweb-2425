@@ -5,7 +5,6 @@
     flex-direction: column;
 }
 
-/* header bar */
 .header {
     color: white;
     display: flex;
@@ -58,7 +57,6 @@
     text-decoration: underline;
 }
 
-/* tab bar */
 .tabBar {
     display: flex;
     justify-content: flex-start;
@@ -66,7 +64,7 @@
   }
   
   .tab {
-    padding: 5px 10px;
+    padding: 5px 17px;
     text-decoration: none;
     color: #333;
     border-top: 2px solid #ffffff;

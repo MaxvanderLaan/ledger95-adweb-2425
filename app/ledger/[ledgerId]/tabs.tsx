@@ -9,7 +9,7 @@ export default function Tabs({ ledgerId }: { ledgerId: string }) {
       <Link href={`/ledger/${ledgerId}/line-graph`} className={styles.tab}>Line Graph</Link>
       <Link href={`/ledger/${ledgerId}/bar-graph`} className={styles.tab}>Bar Graph</Link>
       <Link href={`/ledger/${ledgerId}/categories`} className={styles.tab}>Categories</Link>
-      <Link href={`/ledger/${ledgerId}/create`} className={styles.tab}>New Transaction</Link>
+      <Link href={`/ledger/${ledgerId}/quick-assign`} className={styles.tab}>Quick Assign</Link>
     </div>
   );
 }
