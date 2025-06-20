@@ -87,7 +87,7 @@ export default function CategoriesPage({ params }: Props) {
     return (
         <div className={styles.categoriesWrapper}>
             <CategoryTable ledgerId={ledgerId} categories={categories} />
-            <CategoryForm ledgerId={ledgerId} setCategories={setCategories} />
+            <CategoryForm ledgerId={ledgerId} />
         </div>
     );
 }

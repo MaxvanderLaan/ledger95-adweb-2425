@@ -5,31 +5,51 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { db } from '@/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
 interface Ledger {
     id: string;
     name: string;
     description: string;
+    owner?: string;
+    members?: Record<string, string>;
+    archived?: boolean;
 }
 
 export default function Page() {
     const [ledgers, setLedgers] = useState<Ledger[]>([]);
+    const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            const querySnapshot = await getDocs(collection(db, 'ledgers'));
-
-            const fetchedLedgers: Ledger[] = querySnapshot.docs
-                .filter(doc => doc.data().archived === true)
-                .map(doc => ({
-                    ...doc.data(),
-                    id: doc.id,
-                })) as Ledger[];
-            setLedgers(fetchedLedgers);
-        };
-        fetchItems();
-    }, []);
+        useEffect(() => {
+            const unsubscribe = onAuthStateChanged(getAuth(), (firebaseUser) => {
+                setUser(firebaseUser);
+            });
+            return () => unsubscribe();
+        }, []);
+    
+        useEffect(() => {
+            if (!user) return;
+    
+            const unsubscribe = onSnapshot(collection(db, 'ledgers'), (snapshot) => {
+                const fetchedLedgers: Ledger[] = snapshot.docs
+                    .filter(doc => {
+                        const data = doc.data();
+                        return (
+                            data.archived === true &&
+                            (data.owner === user.uid || (data.members && user.uid in data.members))
+                        );
+                    })
+                    .map(doc => ({
+                        ...doc.data(),
+                        id: doc.id,
+                    })) as Ledger[];
+    
+                setLedgers(fetchedLedgers);
+            });
+    
+            return () => unsubscribe();
+        }, [user]);
 
     return (
         <div>

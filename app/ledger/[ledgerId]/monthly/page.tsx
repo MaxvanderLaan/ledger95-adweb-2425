@@ -1,9 +1,7 @@
 import MonthlyTable from './monthlyTable';
 
 interface Props {
-  params: {
-    ledgerId: string;
-  };
+    params: Promise<{ ledgerId: string }>;
 }
 
 export default async function MonthlyPage({ params }: Props) {

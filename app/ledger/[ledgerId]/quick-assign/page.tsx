@@ -1,9 +1,7 @@
 import QuickAssign from './quickAssign';
 
 interface Props {
-  params: {
-    ledgerId: string;
-  };
+    params: Promise<{ ledgerId: string }>;
 }
 
 export default async function QuickAssignPage({ params }: Props) {
