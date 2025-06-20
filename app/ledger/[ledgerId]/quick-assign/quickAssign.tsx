@@ -72,7 +72,6 @@ export default function QuickAssign({ ledgerId }: Props) {
                 setLoading(false);
             },
             (err) => {
-                console.error("Error fetching categories: ", err);
                 setError("Failed to load categories.");
                 setLoading(false);
             }
@@ -109,7 +108,6 @@ export default function QuickAssign({ ledgerId }: Props) {
         try {
             await updateDoc(doc(db, 'transactions', transactionId), { categoryId });
         } catch (err) {
-            console.error('Failed to update transaction:', err);
             setError('Failed to assign transaction: ' + (err as Error).message);
             setTransactions(previousTransactions);
         }
