@@ -19,8 +19,8 @@ interface Ledger {
 }
 
 export default function Page() {
-    const [ledgers, setLedgers] = useState<Ledger[]>([]);
-    const { ledger, setLedger } = useLedger();
+    const [ledgers, setLedgers] = useState<Ledger[]>([]); //variable holding Ledgers from db
+    const { ledger, setLedger } = useLedger(); //variable holding selected ledger for display in layout.tsx
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
+import Link from 'next/link';
 import styles from './quickAssign.module.css';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
         id: string;
         amount: string;
         categoryId: string;
-        date: any;
+        date: any; // Timestamp
     };
     activeId: string | null;
     categoryName: string;
